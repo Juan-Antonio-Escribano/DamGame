@@ -71,7 +71,7 @@ public class DesertScene extends Scene {
     }
 
     @Override
-    public int getBackgroundViewImgNumber() {
+    public int getBouncyViewImgNumber() {
         return 4;
     }
 

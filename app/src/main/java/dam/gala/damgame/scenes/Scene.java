@@ -67,7 +67,7 @@ public abstract class Scene {
     public abstract int getBouncyViewWidth();
     public abstract int getBouncyViewHeight();
     public abstract Bitmap getBouncyViewBitmap();
-    public abstract int getBackgroundViewImgNumber();
+    public abstract int getBouncyViewImgNumber();
     public abstract int getBackgroundBitmapId();
     public abstract int[] getBackgroundScenes();
     public abstract int getxCurrentImg();

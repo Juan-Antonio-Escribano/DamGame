@@ -22,24 +22,20 @@ public class IceScene extends Scene {
     public IceScene(GameActivity gameActivity){
         super(gameActivity);
         this.gameActivity = gameActivity;
-        this.backgroundScenes = new int[]{this.getBackgroundBitmapId(),this.getInverterBackgroundBitmapId()
-                ,this.getBackgroundBitmapId(),
-                this.getInverterBackgroundBitmapId(),
-                this.getBackgroundBitmapId(),
-                this.getInverterBackgroundBitmapId()};
+        this.backgroundScenes = new int[]{this.getInverterBackgroundBitmapId(),this.getBackgroundBitmapId()
+                ,this.getInverterBackgroundBitmapId(),this.getInverterBackgroundBitmapId(),this.getBackgroundBitmapId()
+                ,this.getInverterBackgroundBitmapId()};
         this.xCurrentImg=0;
         this.xNextImg= this.getScreenWidth()-1;
     }
     @Override
     public int getQuestionViewWidth() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.desert_quest_d, this.gameActivity.getTheme()).getMinimumWidth();
+        return getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA).getWidth();
     }
 
     @Override
     public int getQuestionViewHeight() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.desert_quest_d, this.gameActivity.getTheme()).getMinimumHeight();
+        return getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA).getHeight();
     }
 
     @Override
@@ -57,14 +53,12 @@ public class IceScene extends Scene {
 
     @Override
     public int getBouncyViewWidth() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.pajaro_azul, this.gameActivity.getTheme()).getMinimumWidth();
+        return getBouncyViewBitmap().getWidth();
     }
 
     @Override
     public int getBouncyViewHeight() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.pajaro_azul, this.gameActivity.getTheme()).getMinimumHeight();
+        return getBouncyViewBitmap().getHeight();
     }
 
     @Override
@@ -73,7 +67,7 @@ public class IceScene extends Scene {
     }
 
     @Override
-    public int getBackgroundViewImgNumber() {
+    public int getBouncyViewImgNumber() {
         return 3;
     }
 
@@ -131,14 +125,12 @@ public class IceScene extends Scene {
 
     @Override
     public int getExplosionViewWidth() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.explosion_out, this.gameActivity.getTheme()).getMinimumWidth();
+        return getExplosionViewBitmap().getWidth();
     }
 
     @Override
     public int getExplosionViewHeight() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.explosion_out, this.gameActivity.getTheme()).getMinimumHeight();
+        return getExplosionViewBitmap().getHeight();
     }
 
     @Override
@@ -178,14 +170,12 @@ public class IceScene extends Scene {
 
     @Override
     public int getCrashViewWidth() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.estalactita, this.gameActivity.getTheme()).getMinimumWidth();
+        return getCrashViewBitmapTop().getWidth();
     }
 
     @Override
     public int getCrashViewHeight() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.estalactita, this.gameActivity.getTheme()).getMinimumHeight();
+        return getCrashViewBitmapTop().getHeight();
     }
 
     @Override
@@ -200,14 +190,12 @@ public class IceScene extends Scene {
 
     @Override
     public int getQuesExplosionViewWidth() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.explosion_out, this.gameActivity.getTheme()).getMinimumWidth();
+        return getQuesExplosionViewBitmap().getWidth();
     }
 
     @Override
     public int getQuesExplosionViewHeight() {
-        return ResourcesCompat.getDrawable(this.gameActivity.getResources(),
-                R.drawable.explosion_out, this.gameActivity.getTheme()).getMinimumHeight();
+        return getQuesExplosionViewBitmap().getHeight();
     }
 
     @Override

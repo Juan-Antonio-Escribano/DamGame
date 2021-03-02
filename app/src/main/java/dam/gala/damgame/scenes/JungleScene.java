@@ -49,7 +49,7 @@ public class JungleScene extends Scene {
     }
 
     @Override
-    public int getBackgroundViewImgNumber() {
+    public int getBouncyViewImgNumber() {
         return 0;
     }
 

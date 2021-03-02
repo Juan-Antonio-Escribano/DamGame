@@ -116,10 +116,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             myPaint.setStyle(Paint.Style.STROKE);
             myPaint.setColor(Color.WHITE);
 
-            Paint myPaint2 = new Paint();
-            myPaint2.setStyle(Paint.Style.FILL);
-            myPaint2.setTextSize(50);
-
             //dibujamos el fondo
             canvas.drawBitmap(imagenes[this.scene.getCurrentImgIndex()], this.scene.getxCurrentImg(), 0, null);
             canvas.drawBitmap(imagenes[this.scene.getNextImgIndex()], this.scene.getxNextImg(), 0, null);
@@ -129,7 +125,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 synchronized (this) {
                     for (Touch t : this.touchController.getTouches()) {
                         canvas.drawCircle(t.getX(), t.getY(), 100, myPaint);
-                        //canvas.drawText(t.index + "", t.x, t.y, myPaint2);
                     }
                 }
             }
@@ -254,12 +249,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //cargamos todos los fondos en un array
         for (int i = 0; i < backgroundScenes.length; i++) {
             Bitmap ambientRes = BitmapFactory.decodeResource(getResources(), backgroundScenes[i]);
-            if (imagenes[i] == null)
-                imagenes[i] = Bitmap.createScaledBitmap(ambientRes,
-                        this.play.getScene().getScreenWidth(),
-                        this.play.getScene().getScreenHeight(), true);
-            ambientRes.recycle();
+            imagenes[i] = Bitmap.createScaledBitmap(ambientRes,
+                    this.play.getScene().getScreenWidth(),
+                    this.play.getScene().getScreenHeight(), true);
         }
+
     }
 
     public void createNewCrashBlock() {

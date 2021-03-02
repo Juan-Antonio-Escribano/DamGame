@@ -1,9 +1,10 @@
 package dam.gala.damgame.views;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
+
 import dam.gala.damgame.model.GameConfig;
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.scenes.Scene;
@@ -39,10 +40,10 @@ public class BouncyView {
         this.yCoord = scene.getScreenHeight() / 2 - scene.getBouncyViewHeight() / 2;
         this.xCoord = scene.getBouncyViewWidth() / 5;
         this.yCurrentCoord = yCoord;
-        this.spriteWidth = scene.getBouncyViewWidth() / scene.getBackgroundViewImgNumber();
+        this.spriteWidth = scene.getBouncyViewWidth() / scene.getBouncyViewImgNumber();
         this.spriteHeight = scene.getBouncyViewHeight()/3;
         this.bouncyBitmap = scene.getBouncyViewBitmap();
-        this.gravity = scene.getScreenWidth() * this.gameConfig.getGravity()/1920;
+        this.gravity = scene.getScreenHeight() * this.gameConfig.getGravity()/1920;
         spriteIndex = -1; //recien creado
     }
 
@@ -51,17 +52,18 @@ public class BouncyView {
             this.landed = false;
             return;
         }
-        if (gravity > (this.yCoord)) {
+        if (this.gameView.getScene().getScreenHeight() < this.yCoord) {
             this.gravity = 0;
             this.spriteIndex = -1;
             this.finished = true;
             this.landed = true;
             this.play.setLifes(this.play.getLifes()-1);
         } else {
-            if (this.spriteIndex == 8)
+            if (this.spriteIndex == 7)
                 this.spriteIndex = -1;
         }
-
+        //Comprueba que no ha chocado
+        /*
         for(CrashView crashView:this.gameView.getPlay().getCrashViews()){
             if(this.xCoord+this.spriteWidth>=crashView.getxCoor()) {
                 this.collision = true;
@@ -69,6 +71,7 @@ public class BouncyView {
                 break;
             }
         }
+         */
         //Genera las preguntas
         Iterator iterator = this.gameView.getPlay().getQuestionViews().iterator();
         QuestionView questionView;
@@ -91,15 +94,7 @@ public class BouncyView {
             return;
 
         this.spriteIndex++;
-        //se calcula el area del bitmap que se va a dibujar
-        /*
-        Rect startRect = new Rect(this.spriteIndex * this.spriteWidth, 0,
-                (this.spriteIndex + 1) * this.spriteWidth
-                , this.spriteHeight);
-        Rect endRect = new Rect(this.xCoord, this.yCoord + this.gravity, this.xCoord +
-                this.spriteWidth
-                , this.yCoord + this.spriteHeight + this.gravity);
-        */
+        //Animacion del pajaro
         Bitmap bouncy;
         if (spriteIndex<3)
             bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
@@ -107,13 +102,14 @@ public class BouncyView {
         else if (spriteIndex<6)bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
                 this.spriteWidth*(this.spriteIndex-3), this.spriteHeight, this.spriteWidth, this.spriteHeight);
         else bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
-                    this.spriteWidth*(this.spriteIndex-6), this.spriteHeight*2, this.spriteWidth, this.spriteHeight);
+                    this.spriteWidth*(this.spriteIndex-5), this.spriteHeight*2, this.spriteWidth, this.spriteHeight);
 
+        bouncy=Bitmap.createScaledBitmap(bouncy, this.gameView.getScene().getScreenWidth()*10/100, this.gameView.getScene().getScreenWidth()*10/100,true);
         canvas.drawBitmap(bouncy, this.getxCoord(), this.getyCurrentCoord(), paint);
 
-        //comentar las líneas de abajo para quitar la gravedad
-        this.gravity+=this.gameConfig.getGravity();
-        this.yCurrentCoord = this.yCoord + this.gravity;
+        //Gravedad
+        //this.gravity+=this.gameConfig.getGravity();
+        //this.yCurrentCoord = this.yCoord + this.gravity;
     }
 
     /**
