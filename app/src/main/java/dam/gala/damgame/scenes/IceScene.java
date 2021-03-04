@@ -1,14 +1,9 @@
 package dam.gala.damgame.scenes;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
-
-import androidx.core.content.res.ResourcesCompat;
-
 import com.example.damgame.R;
-
 import dam.gala.damgame.activities.GameActivity;
 import dam.gala.damgame.utils.GameUtil;
 
