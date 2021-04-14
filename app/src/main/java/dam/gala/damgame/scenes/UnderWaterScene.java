@@ -28,7 +28,7 @@ public class UnderWaterScene extends Scene {
     }
 
     @Override
-    public int getQuestionViewImgNumber() {
+    public int getBackgroundViewImgNumber() {
         return 0;
     }
 

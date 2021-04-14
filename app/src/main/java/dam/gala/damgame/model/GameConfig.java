@@ -16,7 +16,7 @@ public class GameConfig {
     private int framesToNewCrashBlock=0;
     private int minHeightCrashBlock =0;
     //gravity
-    private int gravity=3;
+    private int gravity=15;
 
     /* Métodos getter y setters para propiedades de configuración del juego */
 

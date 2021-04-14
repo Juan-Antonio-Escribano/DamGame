@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import java.util.Random;
+
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.scenes.Scene;
 
@@ -12,10 +14,10 @@ import dam.gala.damgame.scenes.Scene;
  */
 public class CrashView {
     private int minHeight;
-    private int height;
+    private int height, heightDown,scaleHeigth=0;
     private int width;
     private int xCoor, yCoor;
-    private Bitmap crashBitmap;
+    private Bitmap topCrashBitmap, downCrashBitmap;
     private Scene scene;
     private Play play;
     private int crashBlockGap;
@@ -29,19 +31,25 @@ public class CrashView {
         this.play = gameView.getPlay();
         this.scene = play.getScene();
         this.height = this.scene.getCrashViewHeight();
-        this.width = this.scene.getCrashViewWidth();
+        this.width = this.scene.getScreenHeight()*15/100;
         this.minHeight = this.play.getConfig().getMinHeightCrashBlock();
+        /*
         this.crashBitmap = (this instanceof TopCrashView)?
                 this.getScene().getCrashViewBitmapTop():
                 this.getScene().getCrashViewBitmapDown();
+         */
+        this.topCrashBitmap=this.scene.getCrashViewBitmapTop();
+        this.downCrashBitmap=this.scene.getCrashViewBitmapDown();
         this.xCoor = this.scene.getScreenWidth();
         this.crashBlockGap = (int)(this.scene.getScreenHeight() * 0.15);
         this.horizontalSpeed = this.scene.getScreenWidth() *10/1920;
     }
 
     public void draw(Canvas canvas, Paint paint){
-        canvas.drawBitmap(this.crashBitmap
-                , this.getxCoor(), this.getyCoor(), paint);
+        canvas.drawBitmap(this.topCrashBitmap
+                , this.getxCoor(), -40, paint);
+        canvas.drawBitmap(this.downCrashBitmap
+                , this.getxCoor(), this.scene.getScreenHeight()-this.heightDown, paint);
     }
     /**
      * Actualización del estado del blqque de choque
@@ -52,6 +60,10 @@ public class CrashView {
             this.setxCoor(this.getScene().getScreenWidth());
         else
             this.setxCoor(this.getxCoor() - this.horizontalSpeed);
+
+        this.topCrashBitmap = Bitmap.createScaledBitmap(this.topCrashBitmap, getWidth(), getHeight(), true);
+        this.heightDown=getHeight()+this.scaleHeigth;
+        this.downCrashBitmap = Bitmap.createScaledBitmap(this.downCrashBitmap, getWidth(), heightDown, true);
     }
     //-----------------------------------------------------------------------------------------
     //Métodos getter y setter para propiedades de los bloques de choque
@@ -99,14 +111,6 @@ public class CrashView {
         this.yCoor = yCoor;
     }
 
-    protected Bitmap getCrashBitmap() {
-        return crashBitmap;
-    }
-
-    protected void setCrashBitmap(Bitmap crashBitmap) {
-        this.crashBitmap = crashBitmap;
-    }
-
     protected Scene getScene() {
         return scene;
     }
@@ -121,5 +125,21 @@ public class CrashView {
 
     protected void setPlay(Play play) {
         this.play = play;
+    }
+
+    public int getHeightDown() {
+        return heightDown;
+    }
+
+    public void setHeightDown(int heightDown) {
+        this.heightDown = heightDown;
+    }
+
+    public int getScaleHeigth() {
+        return scaleHeigth;
+    }
+
+    public void setScaleHeigth(int scaleHeigth) {
+        this.scaleHeigth = scaleHeigth;
     }
 }

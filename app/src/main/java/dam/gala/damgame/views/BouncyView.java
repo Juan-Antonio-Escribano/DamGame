@@ -31,7 +31,8 @@ public class BouncyView {
     private GameConfig gameConfig;
     private QuestionView questionViewCatched;
     private Play play;
-
+    private boolean floor=false, jump=false, ceiling=false;
+    private int framesDrawBouncy, framesJump, framesJumper=10;
     public BouncyView(GameView gameView) {
         this.gameView = gameView;
         this.play = gameView.getPlay();
@@ -44,7 +45,7 @@ public class BouncyView {
         this.spriteHeight = scene.getBouncyViewHeight()/3;
         this.bouncyBitmap = scene.getBouncyViewBitmap();
         this.gravity = scene.getScreenHeight() * this.gameConfig.getGravity()/1920;
-        spriteIndex = -1; //recien creado
+        spriteIndex = 0; //recien creado
     }
 
     public void updateState() {
@@ -52,26 +53,37 @@ public class BouncyView {
             this.landed = false;
             return;
         }
-        if (this.gameView.getScene().getScreenHeight() < this.yCoord) {
-            this.gravity = 0;
-            this.spriteIndex = -1;
-            this.finished = true;
-            this.landed = true;
-            this.play.setLifes(this.play.getLifes()-1);
-        } else {
-            if (this.spriteIndex == 7)
-                this.spriteIndex = -1;
-        }
-        //Comprueba que no ha chocado
+         if (this.spriteIndex == 7)
+            this.spriteIndex = 0;
         /*
+            Comprobacion de choque del pajaro contra los obstaculos
+         */
         for(CrashView crashView:this.gameView.getPlay().getCrashViews()){
-            if(this.xCoord+this.spriteWidth>=crashView.getxCoor()) {
+            /*
+                Comprobacion del choque del pajaro contra el obstaculo que esta situado en el techo
+                * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo
+                * y si la posicion Y es menor que la altura del obstaculo.
+                * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del techo
+             */
+            if(this.getxCoord()+this.spriteWidth>=crashView.getxCoor()&&this.getxCoord()+this.spriteWidth<=crashView.getxCoor()+crashView.getWidth()
+                    &&this.getyCurrentCoord()<=crashView.getHeight()) {
+                this.collision = true;
+                this.play.setLifes(this.play.getLifes()-1);
+                break;
+            }
+            /*
+                Comprobacion del choque del pajaro contra el obstaculo que esta situado en el suelo
+                * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo y
+                * si la posicion Y del pajaro esta entre la altura de la pantalla y la altura de la pantalla mas el alto del obtaculo del suelo
+                * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del suelo
+             */
+            if(this.getxCoord()+this.spriteWidth>=crashView.getxCoor()&&this.getxCoord()+this.spriteWidth<=crashView.getxCoor()+crashView.getWidth()
+                    &&this.getyCurrentCoord()+this.spriteHeight>=this.play.getScene().getScreenHeight()-crashView.getHeightDown()) {
                 this.collision = true;
                 this.play.setLifes(this.play.getLifes()-1);
                 break;
             }
         }
-         */
         //Genera las preguntas
         Iterator iterator = this.gameView.getPlay().getQuestionViews().iterator();
         QuestionView questionView;
@@ -85,6 +97,18 @@ public class BouncyView {
                 iterator.remove();
             }
         }
+        if (this.framesJump==this.framesJumper||isCeiling()){
+            this.framesJump=0;
+            this.framesJumper=5;
+            this.setJump(false);
+        }
+        //Gravedad
+        if (isJump()){
+            this.framesJump++;
+            this.yCurrentCoord = this.yCurrentCoord-10;
+        }else if(!isFloor()){
+            this.yCurrentCoord = this.getyCurrentCoord()+this.gameConfig.getGravity();
+        }
     }
 
     public void draw(Canvas canvas, Paint paint) {
@@ -92,8 +116,11 @@ public class BouncyView {
         //, se choque con un obstáculo o se caiga al suelo
         if (isFinished())
             return;
-
-        this.spriteIndex++;
+        this.framesDrawBouncy++;
+        if (this.framesDrawBouncy==3){
+            this.spriteIndex++;
+            this.framesDrawBouncy=0;
+        }
         //Animacion del pajaro
         Bitmap bouncy;
         if (spriteIndex<3)
@@ -107,9 +134,6 @@ public class BouncyView {
         bouncy=Bitmap.createScaledBitmap(bouncy, this.gameView.getScene().getScreenWidth()*10/100, this.gameView.getScene().getScreenWidth()*10/100,true);
         canvas.drawBitmap(bouncy, this.getxCoord(), this.getyCurrentCoord(), paint);
 
-        //Gravedad
-        //this.gravity+=this.gameConfig.getGravity();
-        //this.yCurrentCoord = this.yCoord + this.gravity;
     }
 
     /**
@@ -138,6 +162,14 @@ public class BouncyView {
         return spriteIndex;
     }
 
+    public int getSpriteHeight() {
+        return spriteHeight;
+    }
+
+    public void setSpriteHeight(int spriteHeight) {
+        this.spriteHeight = spriteHeight;
+    }
+
     public Bitmap getBouncyBitmap() {
         return this.bouncyBitmap;
     }
@@ -157,6 +189,39 @@ public class BouncyView {
     public void setQuestionViewCatched(QuestionView questionViewCatched){
         this.questionViewCatched = questionViewCatched;
     }
+
+    public boolean isFloor() {
+        return floor;
+    }
+
+    public void setFloor(boolean floor) {
+        this.floor = floor;
+    }
+
+    public boolean isJump() {
+        return jump;
+    }
+
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
+
+    public boolean isCeiling() {
+        return ceiling;
+    }
+
+    public void setCeiling(boolean ceiling) {
+        this.ceiling = ceiling;
+    }
+
+    public int getFramesJumper() {
+        return framesJumper;
+    }
+
+    public void setFramesJumper(int framesJumper) {
+        this.framesJumper = framesJumper;
+    }
+
     public void reStart(){
         this.collision=false;
         this.landed = false;

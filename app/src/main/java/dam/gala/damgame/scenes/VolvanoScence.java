@@ -31,7 +31,7 @@ public class VolvanoScence extends Scene{
     }
 
     @Override
-    public int getQuestionViewImgNumber() {
+    public int getBackgroundViewImgNumber() {
         return 0;
     }
 

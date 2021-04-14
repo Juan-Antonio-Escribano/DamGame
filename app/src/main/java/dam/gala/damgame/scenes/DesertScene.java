@@ -49,7 +49,7 @@ public class DesertScene extends Scene {
     }
 
     @Override
-    public int getQuestionViewImgNumber() {
+    public int getBackgroundViewImgNumber() {
         return 4;
     }
 

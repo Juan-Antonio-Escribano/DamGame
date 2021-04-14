@@ -95,7 +95,6 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         this.lifes.add(findViewById(R.id.ivBouncy1));
         this.lifes.add(findViewById(R.id.ivBouncy2));
         this.lifes.add(findViewById(R.id.ivBouncy3));
-       // this.tvLifes = findViewById(R.id.tvLifes);
     }
 
     /**

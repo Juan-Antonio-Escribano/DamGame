@@ -17,11 +17,12 @@ public class IceScene extends Scene {
     public IceScene(GameActivity gameActivity){
         super(gameActivity);
         this.gameActivity = gameActivity;
-        this.backgroundScenes = new int[]{this.getInverterBackgroundBitmapId(),this.getBackgroundBitmapId()
-                ,this.getInverterBackgroundBitmapId(),this.getInverterBackgroundBitmapId(),this.getBackgroundBitmapId()
-                ,this.getInverterBackgroundBitmapId()};
+        this.backgroundScenes = new int[]{this.getBackgroundBitmapId(),this.getInverterBackgroundBitmapId(),
+                this.getBackgroundBitmapId(),this.getInverterBackgroundBitmapId(),
+                this.getBackgroundBitmapId(),this.getInverterBackgroundBitmapId()};
         this.xCurrentImg=0;
-        this.xNextImg= this.getScreenWidth()-1;
+        this.xNextImg= this.getScreenWidth();
+
     }
     @Override
     public int getQuestionViewWidth() {
@@ -42,8 +43,8 @@ public class IceScene extends Scene {
     }
 
     @Override
-    public int getQuestionViewImgNumber() {
-        return 4;
+    public int getBackgroundViewImgNumber() {
+        return 6;
     }
 
     @Override

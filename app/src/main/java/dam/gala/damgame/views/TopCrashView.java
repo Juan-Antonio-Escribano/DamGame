@@ -25,7 +25,9 @@ public class TopCrashView extends CrashView{
                 + this.getCrashBlockGap());
 
         //se calculan las coordenadas x e y
+        /*
         this.setHeight(random.nextInt(max - this.getMinHeight()) + this.getMinHeight());
         this.setyCoor(this.getHeight()-this.getScene().getScreenHeight());
+         */
     }
 }

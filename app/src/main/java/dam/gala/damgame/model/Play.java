@@ -69,7 +69,7 @@ public class Play {
             case GameUtil.TEMA_VOLCANES:
                 break;
             default:
-                play.scene = new DesertScene(gameActivity);
+                play.scene = new IceScene(gameActivity);
                 break;
         }
         return play;

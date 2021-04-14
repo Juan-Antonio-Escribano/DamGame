@@ -63,7 +63,7 @@ public abstract class Scene {
     public abstract int getQuestionViewWidth();
     public abstract int getQuestionViewHeight();
     public abstract Bitmap getQuestionViewBitmap(int complexity);
-    public abstract int getQuestionViewImgNumber();
+    public abstract int getBackgroundViewImgNumber();
     public abstract int getBouncyViewWidth();
     public abstract int getBouncyViewHeight();
     public abstract Bitmap getBouncyViewBitmap();
@@ -107,10 +107,9 @@ public abstract class Scene {
             Display display = gameActivity.getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
-            screenWidth = size.x;
-            screenHeight = size.y;
-        }
-        else{
+            screenWidth = size.x+150;
+            screenHeight = size.y+200;
+        } else{
             Display display = gameActivity.getDisplay();
             screenWidth = display.getWidth();  // deprecated
             screenHeight = display.getHeight();  // deprecated

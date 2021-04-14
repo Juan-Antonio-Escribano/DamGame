@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.renderscript.Sampler;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -24,6 +23,7 @@ import dam.gala.damgame.scenes.Scene;
 import dam.gala.damgame.threads.GameLoop;
 
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Vista principal del juego, gestiona todos los personajes, objetos y escenas.
@@ -62,7 +62,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private AudioController audioController;
     //Parar el juego
     private boolean stopGame;
-
     public GameView(Context context, CrashView crashView) {
         super(context);
         this.crashView = crashView;
@@ -95,13 +94,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //captura de una pregunta
         //se carga el efecto animado de la captura de la pregunta
         this.questionExplosionView = new QuestionExplosionView(this);
-
+        this.scene.setNextImgIndex(1);
         //ambiente
         this.sceneLoad();
         //preguntas
         this.questionsConfig();
         //se controlan los toques en pantalla
         this.setOnTouchListener(this.touchController);
+
     }
 
     /**
@@ -124,14 +124,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if (this.touchController.isTouched()) {
                 synchronized (this) {
                     for (Touch t : this.touchController.getTouches()) {
-                        canvas.drawCircle(t.getX(), t.getY(), 100, myPaint);
+                        bouncyView.setJump(true);
+                        if (bouncyView.isJump())bouncyView.setFramesJumper(bouncyView.getFramesJumper()+2);
+                        canvas.drawCircle(t.getX(), t.getY(), 50, myPaint);
                     }
                 }
             }
             if (this.isStopGame()) {
                 this.audioController.stopAudioPlay();
                 if(this.play.isFinished()){
-                    //poner sonido de final de juego y mostrar ranking
+                    System.out.println(this.play.getLifes());
                 }else if(this.bouncyView.isLanded() || this.bouncyView.isColluded()){
                     //se vuelve a empezar el juego con la siguiente vida
                     this.audioController.startAudioPlay(this.getScene());
@@ -208,7 +210,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 this.play.setCrashBlockCreated(this.play.getCrashBlockCreated() - 1);
             }
         }
-
+        /*
         if (this.gameConfig.getFramesToNewQuestion() == 0) {
             this.createNewQuestion();
             //nuevo ciclo de preguntas
@@ -219,14 +221,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         for (QuestionView goQuestion : this.play.getQuestionViews())
             goQuestion.updatePosition();
+
+         */
         //-----------------------------------------------------------------------------------------
 
         //caputura de las preguntas
-
         //actualizar flappy
-        if (!this.bouncyView.isLanded()) {
-            this.bouncyView.updateState();
-        }
+        if (bouncyView.getyCurrentCoord()>=super.getHeight()-bouncyView.getBouncyBitmap().getHeight()) bouncyView.setFloor(true);
+        else bouncyView.setFloor(false);
+
+        if (bouncyView.getyCurrentCoord()<=0) bouncyView.setCeiling(true);
+        else bouncyView.setCeiling(false);
+
+        this.bouncyView.updateState();
 
         if (this.bouncyView.isLanded() || this.bouncyView.isColluded()) {
             //se carga el view de la explosión para aterrizaje del flappy o choque
@@ -257,11 +264,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void createNewCrashBlock() {
+        Random random = new Random();
         if (this.gameActivity.getGameConfig().getCrashBlocks() -
                 this.play.getCrashBlockCreated() > 0) {
-            TopCrashView topCrashView = new TopCrashView(this);
-            this.play.getCrashViews().add(topCrashView);
-            this.play.getCrashViews().add(new DownCrashView(this, topCrashView));
+            CrashView crashView = new CrashView(this);
+            crashView.setHeight(random.nextInt(400)+this.screenHeight*20/100);
+            //El espacio que hay entre los crash
+            int espacio=Math.abs((-40+crashView.getHeight())-(this.scene.getScreenHeight()-crashView.getHeight()));
+            if (espacio>300){
+                crashView.setScaleHeigth(espacio-300);
+            } else if (espacio<getBouncyView().getSpriteHeight()+150)
+                crashView.setScaleHeigth(-(Math.abs((getBouncyView().getSpriteHeight()+150)-espacio)));
+
+            this.play.getCrashViews().add(crashView);
             this.play.setCrashBlockCreated(this.play.getCrashBlockCreated() + 1);
         }
     }
@@ -285,27 +300,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void updateSceneBackground() {
         //nueva posición del fondo
-        this.scene.setxCurrentImg(this.scene.getxCurrentImg() - 1);
-        this.scene.setxNextImg(this.scene.getxNextImg() - 1);
+        this.scene.setxCurrentImg(this.scene.getxCurrentImg() - 5);
+        this.scene.setxNextImg(this.scene.getxNextImg() - 5);
 
         /*Si la imagen de fondo actual ya ha bajado completamente*/
         if (this.scene.getxCurrentImg() < -this.screenWidth) {
 
             //Se actualiza la imagen actual a la siguiente del array de imagenes
-            if (this.scene.getCurrentImgIndex() == this.scene.getQuestionViewImgNumber() - 1)
+            if (this.scene.getCurrentImgIndex() == this.scene.getBackgroundViewImgNumber() - 1)
                 this.scene.setCurrentImgIndex(0);
             else
                 this.scene.setCurrentImgIndex(this.scene.getCurrentImgIndex() + 1);
 
             //Se actualiza la imagen siguiente
-            if (this.scene.getNextImgIndex() == this.scene.getQuestionViewImgNumber() - 1)
+            if (this.scene.getNextImgIndex() == this.scene.getBackgroundViewImgNumber() - 1)
                 this.scene.setNextImgIndex(0);
             else
                 this.scene.setNextImgIndex(this.scene.getNextImgIndex() + 1);
 
             //Nuevas coordenadas
-            this.scene.setxCurrentImg(this.screenWidth);
-            this.scene.setxNextImg(0);
+            this.scene.setxCurrentImg(0);
+            this.scene.setxNextImg(this.screenWidth);
         }
     }
 
@@ -392,7 +407,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return this.gameActivity;
     }
 
-    //ACtualiza los datos de vida, respuestas, y puntuacion;
+    //Actualiza los datos de vida, respuestas, y puntuacion;
 
     public AudioController getAudioController() {
         return this.audioController;

@@ -76,6 +76,9 @@ public class SettingsActivity extends AppCompatActivity {
             case GameUtil.TEMA_DESIERTO:
                 setTheme(R.style.Desert_DamGame);
                 break;
+            case GameUtil.TEMA_HIELO:
+                setTheme(R.style.Ice_DamGame);
+                break;
             default:
                 setTheme(R.style.Desert_DamGame);
                 break;

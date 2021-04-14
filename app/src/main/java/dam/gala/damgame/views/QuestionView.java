@@ -45,7 +45,7 @@ public class QuestionView {
         this.play = play;
         this.scene = play.getScene();
         this.question = question;
-        spriteWidth = this.scene.getQuestionViewWidth()/this.scene.getQuestionViewImgNumber();
+        spriteWidth = this.scene.getQuestionViewWidth()/this.scene.getBackgroundViewImgNumber();
         spriteHeight =this.scene.getQuestionViewHeight();
         spriteIndex =-1;
         this.questionBitmap = play.getScene().getQuestionViewBitmap(question.getComplejidad());
@@ -146,7 +146,7 @@ public class QuestionView {
      * @return
      */
     public boolean isFinished(){
-        return spriteIndex >=this.scene.getQuestionViewImgNumber() || this.questionCatched;
+        return spriteIndex >=this.scene.getBackgroundViewImgNumber() || this.questionCatched;
     }
     public Question getQuestion() {
         return question;

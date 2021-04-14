@@ -13,4 +13,7 @@
     <color name="desert_primary">#8f6440</color>
     <color name="desert_primary_variant">#c1926b</color>
     <color name="desert_secondary_variant">#f5c299</color>
+    <color name="ice_primary">#00bfff</color>
+    <color name="ice_primary_variant">#0080ff</color>
+    <color name="ice_secondary_variant">#0040ff</color>
 </resources>
