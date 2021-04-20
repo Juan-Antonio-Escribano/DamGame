@@ -1,7 +1,10 @@
 package dam.gala.damgame.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +32,13 @@ public class SettingsActivity extends AppCompatActivity {
         setTema();
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
+
+        getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                recreate();
+            }
+        });
     }
 
     /**
@@ -71,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
      * Obtiene el tema de las preferencias del juego y lo asigna como tema de la actividad
      */
     private void setTema(){
-        int sceneCode = Integer.valueOf(getDefaultSharedPreferences(this).getString("theme_setting","100"));
+        int sceneCode = Integer.valueOf(getDefaultSharedPreferences(this).getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
         switch(sceneCode){
             case GameUtil.TEMA_DESIERTO:
                 setTheme(R.style.Desert_DamGame);
@@ -80,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
                 setTheme(R.style.Ice_DamGame);
                 break;
             default:
-                setTheme(R.style.Desert_DamGame);
+                setTheme(R.style.Ice_DamGame);
                 break;
         }
 

@@ -2,12 +2,14 @@ package dam.gala.damgame.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,7 +67,7 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTema();
+        this.setTema();
         setContentView(R.layout.activity_main);
         this.config = new GameConfig();
 
@@ -85,7 +87,6 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
                 getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
         this.gameMove = Play.createGameMove(this,this.sceneCode, this.config);
         this.scene = this.gameMove.getScene();
-
         setContentView(R.layout.activity_game);
         this.gameView = findViewById(R.id.svGame);
         hideSystemUI();
@@ -135,13 +136,16 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
      */
     private void setTema(){
         this.sceneCode = Integer.parseInt(getDefaultSharedPreferences(this).
-                getString("theme_setting",String.valueOf(GameUtil.TEMA_DESIERTO)));
+                getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
         switch(this.sceneCode){
             case GameUtil.TEMA_DESIERTO:
-                setTheme(R.style.Desert_DamGame);
+                this.setTheme(R.style.Desert_DamGame);
+                break;
+            case GameUtil.TEMA_HIELO:
+                this.setTheme(R.style.Ice_DamGame);
                 break;
             default:
-                setTheme(R.style.Desert_DamGame);
+                this.setTheme(R.style.Ice_DamGame);
                 break;
         }
 
@@ -234,12 +238,15 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode== SETTINGS_ACTION){
             if(resultCode== Activity.RESULT_OK){
-                //TODO Este método hay que revisarlo y borrarlo si finalmente no se usa
+                if (sceneCode!=Integer.parseInt(getDefaultSharedPreferences(this).
+                        getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO))))
+                    this.recreate();
+
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     //Actualiza las imagenes que representan las vidas disponibles, cuando se pierda una vida, la oculta aunque siga estando ahi.
