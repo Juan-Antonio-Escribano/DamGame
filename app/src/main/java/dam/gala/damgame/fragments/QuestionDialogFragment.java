@@ -120,9 +120,13 @@ public class QuestionDialogFragment extends DialogFragment
         });
 
         //personalizar según el tema elegido
-        String tema = getDefaultSharedPreferences(getActivity()).getString("theme_setting","100");
+        int tema = Integer.valueOf(getDefaultSharedPreferences(getActivity()).getString("theme_setting",String.valueOf(GameUtil.TEMA_HIELO)));
         switch(tema){
-            case "@string/TEMA_DESIERTO":
+            case GameUtil.TEMA_DESIERTO:
+                break;
+            case GameUtil.TEMA_HIELO:
+                lyQuestionDialog.setBackgroundColor(Color.WHITE);
+                break;
             default:
                 lyQuestionDialog.setBackground(ResourcesCompat.getDrawable(
                         this.getResources(),R.drawable.desert_dialog_border_out,

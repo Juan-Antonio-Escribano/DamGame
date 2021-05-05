@@ -25,12 +25,22 @@
                 android:layout_height="wrap_content"
                 android:text="TextView"
                 android:textStyle="normal|bold" />
-
+            <!--
+                RadioGroup agrupa RadioButton de esta forma cuando pulsemos un RadioButton
+                si hay otro que ya esta pulsado se desmarcara y se marcara el que acabamos
+                de pulsar.
+                    *android:visibility="visible": esta propiedad asigna si esta visible o no
+            -->
             <RadioGroup
                 android:id="@+id/rgRes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
+                <!--
+                    RadioButton es un botón de selección permite elegir una opción
+                    del RadioGroup
+                        *android:checked="true": Esta propiedad marca si el RadioButton
+                            aparece seleccionado.
+                -->
                 <RadioButton
                     android:id="@+id/rbRes1"
                     android:layout_width="match_parent"

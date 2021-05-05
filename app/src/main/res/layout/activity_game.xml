@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    RelativeLayout muestra en posiciones relativas un conjuntos de vistas
+        *android:orientation="vertical": Esta propiedad indica la orientación del
+            layout.
+-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+    <!--
+        Este elemento es una clase que hereda de SufaceView, esta clase tiene metodos de
+        de callback del SufaceView y es donde se carga el juego.
+    -->
     <dam.gala.damgame.views.GameView
         android:id="@+id/svGame"
         android:layout_width="match_parent"
@@ -22,7 +30,12 @@
             android:layout_weight="3"
             android:gravity="left"
             android:orientation="horizontal">
-
+            <!--
+                ImageView sirve para mostrar un recurso de imagen como puede ser un Bitmap o un Drawble.
+                    android:layout_weight="1": Esta propiedad es el peso de este elemento en el layout,
+                        esto sirve para la colocación del elemento
+                    app:srcCompat="@drawable/desert_lifes_score": esto es el recurso que se va a mostrar
+            -->
             <ImageView
                 android:id="@+id/ivBouncy1"
                 android:layout_width="wrap_content"
@@ -51,7 +64,11 @@
             android:layout_weight="1"
             android:gravity="right"
             android:orientation="horizontal">
-
+            <!--
+                TextView este elemento muestra un texto
+                android:text="@string/cero": Esta propiedad es
+                    el texto que se va a mostrar
+            -->
             <TextView
                 android:id="@+id/tvAnswers"
                 android:layout_width="40dp"

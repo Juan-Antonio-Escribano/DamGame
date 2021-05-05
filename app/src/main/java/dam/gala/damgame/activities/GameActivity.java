@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import dam.gala.damgame.controllers.AudioController;
 import dam.gala.damgame.fragments.QuestionDialogFragment;
 import dam.gala.damgame.interfaces.InterfaceDialog;
+import dam.gala.damgame.model.Email;
 import dam.gala.damgame.model.GameConfig;
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.model.Question;
@@ -75,7 +76,8 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         btIniciar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startGame();
+                Email email = new Email("jaed1257@gmail.com", "Prueba Email", "Email Enviado Correctamente");
+                email.execute();
             }
         });
     }

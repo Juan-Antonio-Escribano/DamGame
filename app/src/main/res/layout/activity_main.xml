@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Este es el contenedor principal dentro del layout tendremos los diferentes elementos.
+    Cada Layout tiene un comportamiento diferente en este caso al ser un LinearLayout
+    coloca los elementos de su interior en linea
+    Propiedades del Layout:
+        *android:id="@+id/lyMain": Con esta propiedad le asignamos el id al layout
+        *android:layout_width="match_parent":Le asigna el ancho, en este caso ocupa
+            todo el ancho de la pantalla
+        *android:layout_height="match_parent":Le asigna el alto, en este caso ocupa
+            todo el alto de la pantalla
+        *android:layout_margin="20dp": Esta propiedad es el margen del layout
+        *android:gravity="bottom|center": la gravedad hace que coloque todos los elementos del layout
+            en la parte inferior y en el centro
+
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +23,18 @@
     android:layout_margin="20dp"
     android:gravity="bottom|center"
     tools:context="dam.gala.damgame.activities.GameActivity">
-
+    <!--
+        Este es el botón para iniciar el juego.
+        Propiedades del botón:
+            *android:id="@+id/btIniciar": Aquí se le asigna el id
+            *android:layout_width="wrap_content": Aquí define el ancho, ocupa el ancho del
+                contenido del botón
+            *android:layout_height="wrap_content": Aquí define el alto, ocupa el alto del
+                contenido del botón
+            *android:background="@drawable/button_gradient": Esta propiedad asigna el fondo del botón,
+                en este caso le esta asignando un degradado
+            *android:text="@string/comenzar": Este es el texto que va a tener el botón
+    -->
     <Button
         android:id="@+id/btIniciar"
         android:layout_width="wrap_content"

@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    PreferenceScreen es un layout que sirve para asignar las preferencias
+-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        El PreferenceCategory sirve para dividir las diferentes preferencias en categorias
+            * android:title="Ambientes": Declara el titulo de la categoria
+    -->
     <PreferenceCategory android:title="@string/ambientes">
-
+        <!--
+            ListPreference es una lista de opciones, en el que se selecciona una de las
+            diferentes opciones para que posteriormente con la clave que le hemos asignado podamos
+            recoger la opción marcada por el usuario
+                *android:defaultValue="103": Aquí se asigna un valor por defecto, en caso de que no se cambie
+                    se utilizara este valor.
+                *android:entries="@array/ambientes": En esta propiedad se asigna el array de opciones
+                    que nos saldra en el desplegable
+                *android:entryValues="@array/ambientes_v": Asigna el array que marcara el valor de cada opción,
+                    este valor sera el que guardara en las preferencias
+                *android:summary="@string/seleccione_ambiente": Este sera el texto que se vera en el desplegable
+        -->
         <ListPreference
             android:defaultValue="@string/TEMA_HIELO"
             android:entries="@array/ambientes"
