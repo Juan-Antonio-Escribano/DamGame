@@ -14,6 +14,12 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * Esta clase define el email y contiene herramientas para el envio de un correo
+ * personalizado
+ * @author Juan Antonio Escribano Diaz
+ * @version 1.0
+ */
 public class Email extends AsyncTask<Void,Void,Void> {
     private String destinatario, asunto, cuerpo;
     public Email(String destinatario, String asunto, String cuerpo){
@@ -25,7 +31,7 @@ public class Email extends AsyncTask<Void,Void,Void> {
     /**
      * Metodo sobrescrito. Se encarga de enviar un correo
      * @param voids
-     * @return 
+     * @return
      */
     @Override
     protected Void doInBackground(Void... voids) {
