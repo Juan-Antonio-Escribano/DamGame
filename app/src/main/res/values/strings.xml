@@ -45,5 +45,6 @@
     <string name="Puntos">Puntos</string>
     <string name="respuestas">Respuestas</string>
     <string name="cero">0</string>
-
+    <string name="dificultad">Dificultad</string>
+    <string name="seleccion_dificultad">Seleccione la dificultad</string>
 </resources>

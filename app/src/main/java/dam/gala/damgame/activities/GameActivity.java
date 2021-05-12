@@ -76,8 +76,7 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         btIniciar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Email email = new Email("jaed1257@gmail.com", "Prueba Email", "Email Enviado Correctamente");
-                email.execute();
+                startGame();
             }
         });
     }
@@ -87,6 +86,22 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
     private void startGame(){
         this.sceneCode = Integer.parseInt(getDefaultSharedPreferences(this).
                 getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
+        int difficulty=Integer.parseInt(getDefaultSharedPreferences(this).getString("difficulty_setting", String.valueOf(GameUtil.MEDIUM)));
+        switch (difficulty){
+            case GameUtil.EASY:
+                this.config.setQuestions(25);
+                this.config.setGravity(10);
+                break;
+            case GameUtil.MEDIUM:
+                this.config.setQuestions(20);
+                this.config.setGravity(15);
+                break;
+            case GameUtil.DIFFICULT:
+                this.config.setQuestions(15);
+                this.config.setGravity(20);
+                break;
+
+        }
         this.gameMove = Play.createGameMove(this,this.sceneCode, this.config);
         this.scene = this.gameMove.getScene();
         setContentView(R.layout.activity_game);

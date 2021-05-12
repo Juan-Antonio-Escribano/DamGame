@@ -79,4 +79,7 @@ public class GameConfig {
     public int getGravity(){
         return this.gravity;
     }
+    public void setGravity(int gravity){
+        this.gravity=gravity;
+    }
 }

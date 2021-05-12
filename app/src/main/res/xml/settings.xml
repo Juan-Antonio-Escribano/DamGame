@@ -27,13 +27,13 @@
             android:key="ambient_setting"
             android:summary="@string/seleccione_ambiente" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preguntas">
+    <PreferenceCategory android:title="@string/dificultad">
 
         <ListPreference
-            android:defaultValue="1011"
-            android:entries="@array/materias"
-            android:entryValues="@array/materias_v"
-            android:key="topics"
-            android:summary="@string/seleccione_materia" />
+            android:defaultValue="1"
+            android:entries="@array/difficulty"
+            android:entryValues="@array/difficulty_v"
+            android:key="difficulty_setting"
+            android:summary="@string/seleccion_dificultad" />
     </PreferenceCategory>
 </PreferenceScreen>

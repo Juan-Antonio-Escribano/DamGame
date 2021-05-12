@@ -48,4 +48,15 @@
         <item>1043</item>
         <item>1044</item>
     </string-array>
+    <string-array name="difficulty">
+        <item>Fácil</item>
+        <item>Medio</item>
+        <item>Difícil</item>
+    </string-array>
+    <string-array name="difficulty_v">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>
