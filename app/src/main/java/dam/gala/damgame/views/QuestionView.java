@@ -3,16 +3,15 @@ package dam.gala.damgame.views;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
+
+import java.util.Random;
 
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.model.Question;
 import dam.gala.damgame.scenes.Scene;
 import dam.gala.damgame.utils.GameUtil;
-
-import java.util.Random;
 
 /**
  * Vista gráfica del objeto de una pregunta
@@ -33,6 +32,7 @@ public class QuestionView {
     private int horizontalDirection;
     private int speed;
     private boolean questionCatched;
+    private int frameDrawQuestion=0, row=0;
 
     /**
      * Construye la vista de una pregunta
@@ -45,13 +45,13 @@ public class QuestionView {
         this.play = play;
         this.scene = play.getScene();
         this.question = question;
-        spriteWidth = this.scene.getQuestionViewWidth()/this.scene.getBackgroundViewImgNumber();
-        spriteHeight =this.scene.getQuestionViewHeight();
-        spriteIndex =-1;
+        spriteWidth = this.scene.getQuestionViewWidth()/4;
+        spriteHeight =this.scene.getQuestionViewHeight()/4;
+        spriteIndex = 0;
         this.questionBitmap = play.getScene().getQuestionViewBitmap(question.getComplejidad());
         //el siguiente código hay que modificarlo cuando tengamos las preguntas
         random = new Random();
-        if(random.nextFloat()>0.20){
+        if(random.nextFloat()<0.20){
             this.question.setComplejidad(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA);
             this.speed =  GameUtil.HIGH_COMPLEX_SPEED * this.scene.getScreenWidth() /1920;
             this.questionBitmap = this.scene.getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA);
@@ -122,22 +122,22 @@ public class QuestionView {
      * @param paint Estilo y color con el que se dibuja
      */
     public void draw(Canvas canvas, Paint paint){
-        int spritePosition;
-
         if(!isFinished()) {
-            //se va incrementando el índice de imagen para producir la animación en la pregunta
-            spriteIndex = spriteIndex == 3 ? 0 : spriteIndex + 1;
-            spritePosition = spriteIndex * spriteWidth;
-            //Calculamos el cuadrado del sprite que vamos a dibujar
-            Rect origen = new Rect(spritePosition, 0, spritePosition + spriteWidth,
-                    spriteHeight);
+            /*
+                Animación de la pregunta
+             */
+            this.frameDrawQuestion++;
+            if(this.frameDrawQuestion==2){
+                this.row=this.spriteIndex==3?this.row+1:this.row;
+                this.row=this.row==3?0:this.row;
+                this.spriteIndex=this.spriteIndex==3?0:this.spriteIndex+1;
+                this.frameDrawQuestion=0;
+            }
 
-            //calculamos donde vamos a dibujar la porcion del sprite
-            Rect destino = new Rect((int) this.xCoor, (int) this.yCoor,
-                    (int) this.xCoor + this.spriteWidth,
-                    (int) this.yCoor + this.spriteHeight);
-
-            canvas.drawBitmap(this.questionBitmap, origen, destino, paint);
+            Bitmap nowQuestionFrame=Bitmap.createBitmap(this.questionBitmap, this.spriteWidth*this.spriteIndex, this.spriteHeight*this.row,
+                    this.spriteWidth ,this.spriteHeight);
+            nowQuestionFrame=Bitmap.createScaledBitmap(nowQuestionFrame,200, 200,true);
+            canvas.drawBitmap(nowQuestionFrame, this.getxCoor(), this.getyCoor(), paint);
         }
     }
 

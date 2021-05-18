@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import java.util.Random;
-
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.scenes.Scene;
 

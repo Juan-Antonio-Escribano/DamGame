@@ -1,7 +1,9 @@
 package dam.gala.damgame.fragments;
 
 import android.os.Bundle;
+
 import androidx.preference.PreferenceFragmentCompat;
+
 import com.example.damgame.R;
 
 /**

@@ -1,15 +1,14 @@
 package dam.gala.damgame.views;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+
+import java.util.Iterator;
 
 import dam.gala.damgame.model.GameConfig;
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.scenes.Scene;
-
-import java.util.Iterator;
 
 /**
  * Personaje principal, debe sortear obstáculos y responder el máximo número de preguntas
@@ -55,9 +54,11 @@ public class BouncyView {
         }
          if (this.spriteIndex == 7)
             this.spriteIndex = 0;
-        /*
+
+         /*
             Comprobacion de choque del pajaro contra los obstaculos
          */
+        /*
         for(CrashView crashView:this.gameView.getPlay().getCrashViews()){
             /*
                 Comprobacion del choque del pajaro contra el obstaculo que esta situado en el techo
@@ -65,18 +66,21 @@ public class BouncyView {
                 * y si la posicion Y es menor que la altura del obstaculo.
                 * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del techo
              */
+        /*
             if(this.getxCoord()+this.spriteWidth>=crashView.getxCoor()&&this.getxCoord()+this.spriteWidth<=crashView.getxCoor()+crashView.getWidth()
                     &&this.getyCurrentCoord()<=crashView.getHeight()) {
                 this.collision = true;
                 this.play.setLifes(this.play.getLifes()-1);
                 break;
             }
+            */
             /*
                 Comprobacion del choque del pajaro contra el obstaculo que esta situado en el suelo
                 * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo y
                 * si la posicion Y del pajaro esta entre la altura de la pantalla y la altura de la pantalla mas el alto del obtaculo del suelo
                 * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del suelo
              */
+        /*
             if(this.getxCoord()+this.spriteWidth>=crashView.getxCoor()&&this.getxCoord()+this.spriteWidth<=crashView.getxCoor()+crashView.getWidth()
                     &&this.getyCurrentCoord()+this.spriteHeight>=this.play.getScene().getScreenHeight()-crashView.getHeightDown()) {
                 this.collision = true;
@@ -84,6 +88,7 @@ public class BouncyView {
                 break;
             }
         }
+        */
         //Genera las preguntas
         Iterator iterator = this.gameView.getPlay().getQuestionViews().iterator();
         QuestionView questionView;
@@ -125,7 +130,7 @@ public class BouncyView {
         Bitmap bouncy;
         if (spriteIndex<3)
             bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
-                    this.spriteWidth*this.spriteIndex, 0, this.spriteHeight, this.spriteHeight);
+                    this.spriteWidth*this.spriteIndex, 0, this.spriteWidth, this.spriteHeight);
         else if (spriteIndex<6)bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
                 this.spriteWidth*(this.spriteIndex-3), this.spriteHeight, this.spriteWidth, this.spriteHeight);
         else bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),

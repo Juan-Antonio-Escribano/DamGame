@@ -8,15 +8,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
+
 import com.example.damgame.R;
+
 import dam.gala.damgame.interfaces.InterfaceDialog;
 import dam.gala.damgame.model.Question;
 import dam.gala.damgame.utils.GameUtil;
@@ -59,7 +63,7 @@ public class QuestionDialogFragment extends DialogFragment
         builder = new AlertDialog.Builder(getActivity());
         switch(this.question.getTipo()) {
             case GameUtil.PREGUNTA_MULTIPLE:
-                break;
+                return crearPreguntaCompleja();
             case GameUtil.PREGUNTA_SIMPLE:
                 return crearPreguntaSimple();
             case GameUtil.PREGUNTA_LISTA:
@@ -85,12 +89,7 @@ public class QuestionDialogFragment extends DialogFragment
                 rbRes.setVisibility(View.GONE);
             else {
                 rbRes.setText(question.getRespuestas()[i]);
-                rbRes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        btConfirmar.setEnabled(true);
-                    }
-                });
+                rbRes.setOnClickListener(view -> btConfirmar.setEnabled(true));
             }
         }
 
@@ -101,31 +100,146 @@ public class QuestionDialogFragment extends DialogFragment
         LinearLayout lyPuntos = dialogView.findViewById(R.id.lyPuntos);
 
         RadioGroup rgPuntos = dialogView.findViewById(R.id.rgPuntos);
+        RadioButton rbPuntos = dialogView.findViewById(R.id.rbPuntos);
+        RadioButton rbVida = dialogView.findViewById(R.id.rbVida);
 
-        if(question.getComplejidad()== GameUtil.PREGUNTA_COMPLEJIDAD_ALTA) {
+        if(question.getComplejidad()==GameUtil.PREGUNTA_COMPLEJIDAD_ALTA) {
             rgPuntos.setVisibility(View.VISIBLE);
-            RadioButton rbPuntos = dialogView.findViewById(R.id.rbPuntos);
+            rbPuntos.setText(question.getPuntos()+ getString(R.string.puntos));
+        }else{
+            rgPuntos.setVisibility(View.VISIBLE);
             rbPuntos.setText(question.getPuntos()+ getString(R.string.puntos));
         }
+
         this.btConfirmar = dialogView.findViewById(R.id.btOk);
         this.btConfirmar.setEnabled(false);
 
-        this.btConfirmar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String respuesta = ((RadioButton)dialogView.findViewById(rgRes.getCheckedRadioButtonId())).getText().toString();
-                interfaceDialog.setRespuesta(respuesta);
-                QuestionDialogFragment.this.dismiss();
-            }
+        this.btConfirmar.setOnClickListener(view -> {
+            String respuesta = ((RadioButton)dialogView.findViewById(rgRes.getCheckedRadioButtonId())).getText().toString();
+            interfaceDialog.setRespuesta(respuesta);
+            QuestionDialogFragment.this.dismiss();
         });
 
         //personalizar según el tema elegido
-        int tema = Integer.valueOf(getDefaultSharedPreferences(getActivity()).getString("theme_setting",String.valueOf(GameUtil.TEMA_HIELO)));
+        int tema = Integer.valueOf(getDefaultSharedPreferences(getActivity()).getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
+        switch(tema){
+            case GameUtil.TEMA_DESIERTO:
+
+                break;
+            case GameUtil.TEMA_HIELO:
+                lyQuestionDialog.setBackground(getResources().getDrawable(R.drawable.ice_dialog_border_out));
+                lyQuestion.setBackground(getResources().getDrawable(R.drawable.ice_dialog_border_out));
+                tvEnunciado.setTextColor(getResources().getColor(R.color.ice_text));
+                for(int i=0;i<rgRes.getChildCount();i++) {
+                    RadioButton rbRes = (RadioButton)rgRes.getChildAt(i);
+                    if (i < question.getRespuestas().length)
+                        rbRes.setTextColor(getResources().getColor(R.color.ice_text));
+                }
+                for(int i=0;i<rgPuntos.getChildCount();i++) {
+                    RadioButton rbP = (RadioButton)rgPuntos.getChildAt(i);
+                    rbP.setTextColor(getResources().getColor(R.color.ice_text));
+                }
+                btConfirmar.setBackground(getResources().getDrawable(R.drawable.ice_dialog_button));
+                break;
+            default:
+                lyQuestionDialog.setBackground(ResourcesCompat.getDrawable(
+                        this.getResources(),R.drawable.desert_dialog_border_out,
+                        this.getActivity().getTheme()));
+                lyQuestion.setBackground(ResourcesCompat.getDrawable(
+                        this.getResources(),R.drawable.desert_bg,
+                        this.getActivity().getTheme()));
+                lyPuntos.setBackground(ResourcesCompat.getDrawable(
+                        this.getResources(),R.drawable.desert_dialog_border_out,
+                        this.getActivity().getTheme()));
+                rgPuntos.setBackground(ResourcesCompat.getDrawable(
+                        this.getResources(),R.drawable.desert_dialog_border_in,
+                        this.getActivity().getTheme()));
+                btConfirmar.setBackground(ResourcesCompat.getDrawable(
+                        this.getResources(),R.drawable.desert_dialog_border_out,
+                        this.getActivity().getTheme()));
+                break;
+        }
+
+        Dialog dialog =  builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+    /**
+     * Devuelve el cuadro de diálogo para una pregunta de tipo complejo
+     * @return Dialog el cuadro de diálogo
+     */
+    private Dialog crearPreguntaCompleja(){
+        View dialogView = getActivity().getLayoutInflater().
+                inflate(R.layout.pregunta_seleccion,null);
+        builder.setView(dialogView);
+        TextView tvEnunciado = dialogView.findViewById(R.id.tvPregunta);
+        tvEnunciado.setText(question.getEnunciado());
+        LinearLayout ly = dialogView.findViewById(R.id.lyCheck);
+        for(int i=0;i<ly.getChildCount();i++) {
+          CheckBox checkBox = (CheckBox) ly.getChildAt(i);
+          if (i>question.getRespuestas().length-1)
+              checkBox.setVisibility(View.GONE);
+          else {
+              checkBox.setText(question.getRespuestas()[i]);
+              checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                  if(isChecked)
+                      btConfirmar.setEnabled(true);
+                  else {
+                      for (int i1 = 0; i1 <ly.getChildCount(); i1++){
+                          CheckBox checkBox1 = (CheckBox) ly.getChildAt(i1);
+                          if (checkBox1.isChecked()){
+                              btConfirmar.setEnabled(true);
+                              break;
+                          }else btConfirmar.setEnabled(false);
+                      }
+                  }
+              });
+          }
+        }
+
+        LinearLayout lyQuestionDialog = dialogView.findViewById(R.id.lyQuestionDialog);
+
+        LinearLayout lyQuestion = dialogView.findViewById(R.id.lyQuestion);
+
+        LinearLayout lyPuntos = dialogView.findViewById(R.id.lyPuntos);
+
+        RadioGroup rgPuntos = dialogView.findViewById(R.id.rgPuntos);
+        RadioButton rbPuntos = dialogView.findViewById(R.id.rbPuntos);
+        RadioButton rbVida = dialogView.findViewById(R.id.rbVida);
+
+        if(question.getComplejidad()==GameUtil.PREGUNTA_COMPLEJIDAD_ALTA) {
+            rgPuntos.setVisibility(View.VISIBLE);
+            rbPuntos.setText(question.getPuntos()+ getString(R.string.puntos));
+        }else{
+            rgPuntos.setVisibility(View.VISIBLE);
+            rbPuntos.setText(question.getPuntos()+ getString(R.string.puntos));
+        }
+
+        this.btConfirmar = dialogView.findViewById(R.id.btOk);
+        this.btConfirmar.setEnabled(false);
+
+        this.btConfirmar.setOnClickListener(view -> {
+            String respuesta = null;
+            for (int i1 = 0; i1 <ly.getChildCount(); i1++){
+                CheckBox checkBox1 = (CheckBox) ly.getChildAt(i1);
+                if (checkBox1.isChecked())
+                    respuesta+="/"+checkBox1.getText();
+            }
+            interfaceDialog.setRespuesta(respuesta);
+            QuestionDialogFragment.this.dismiss();
+        });
+
+        //personalizar según el tema elegido
+        int tema = Integer.valueOf(getDefaultSharedPreferences(getActivity()).getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
         switch(tema){
             case GameUtil.TEMA_DESIERTO:
                 break;
             case GameUtil.TEMA_HIELO:
-                lyQuestionDialog.setBackgroundColor(Color.WHITE);
+                lyQuestionDialog.setBackground(getResources().getDrawable(R.drawable.ice_dialog_border_out));
+                lyQuestion.setBackground(getResources().getDrawable(R.drawable.ice_dialog_border_out));
+                tvEnunciado.setTextColor(getResources().getColor(R.color.ice_text));
+                btConfirmar.setBackground(getResources().getDrawable(R.drawable.ice_dialog_button));
                 break;
             default:
                 lyQuestionDialog.setBackground(ResourcesCompat.getDrawable(

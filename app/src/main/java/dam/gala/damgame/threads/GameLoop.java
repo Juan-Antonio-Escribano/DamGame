@@ -2,6 +2,7 @@ package dam.gala.damgame.threads;
 
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
+
 import dam.gala.damgame.views.GameView;
 
 /**

@@ -2,6 +2,7 @@ package dam.gala.damgame.scenes;
 
 import android.graphics.Bitmap;
 import android.view.View;
+
 import dam.gala.damgame.activities.GameActivity;
 
 /**

@@ -2,17 +2,15 @@ package dam.gala.damgame.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 import dam.gala.damgame.controllers.AudioController;
 import dam.gala.damgame.fragments.QuestionDialogFragment;
 import dam.gala.damgame.interfaces.InterfaceDialog;
-import dam.gala.damgame.model.Email;
 import dam.gala.damgame.model.GameConfig;
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.model.Question;
@@ -37,7 +34,6 @@ import dam.gala.damgame.views.GameView;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
@@ -59,6 +55,9 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
     private ArrayList<ImageView> lifes;
     //Vista para las respuestas;
     private TextView tvRespuestas;
+    private ArrayList<Integer> ambientes= new ArrayList<>(), ambientesV= new ArrayList<>();
+    private int numAmbiente=0;
+    private LinearLayout lyMain;
     /**
      * Método de callback del ciclo de vida de la actividad, llamada anterior a que la actividad
      * pasé al estado 'Activa'
@@ -71,12 +70,48 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         this.setTema();
         setContentView(R.layout.activity_main);
         this.config = new GameConfig();
+        //Declaracion de los ambientes;
+        this.cargarAmbientes(new int[]{R.drawable.fondo_inicio, R.drawable.desert_dialog_bg},
+                new int[]{GameUtil.TEMA_HIELO,GameUtil.TEMA_DESIERTO});
+        lyMain=findViewById(R.id.lyMain);
+        this.setAmbientefondo();
+        Button btnAnterior, btnSiguiente;
+        btnAnterior=findViewById(R.id.btnAnterior);
+        btnSiguiente=findViewById(R.id.btnSiguiente);
+        /*
+            Cambios de Ambientes
+         */
+        btnAnterior.setOnClickListener(v->{
+            if (numAmbiente==0){
+                lyMain.setBackground(getResources().getDrawable(ambientes.get(ambientes.size()-1)));
+                numAmbiente=ambientes.size()-1;
+            }else{
+                lyMain.setBackground(getResources().getDrawable(ambientes.get(numAmbiente-1)));
+                numAmbiente--;
+            }
+            getDefaultSharedPreferences(this).edit().putString("ambient_setting",String.valueOf(ambientesV.get(numAmbiente))).commit();
+            recreate();
+        });
+        btnSiguiente.setOnClickListener(v->{
+            if (numAmbiente==ambientes.size()-1){
+                lyMain.setBackground(getResources().getDrawable(ambientes.get(0)));
+                numAmbiente=0;
+            }else{
+                lyMain.setBackground(getResources().getDrawable(ambientes.get(numAmbiente+1)));
+                numAmbiente++;
+            }
+            getDefaultSharedPreferences(this).edit().putString("ambient_setting",String.valueOf(ambientesV.get(numAmbiente))).commit();
+            recreate();
+        });
 
+        /*
+            Inicio del game
+         */
         Button btIniciar = findViewById(R.id.btIniciar);
         btIniciar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startGame();
+                showQuestionDialog();
             }
         });
     }
@@ -122,7 +157,7 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         //código para probar el cuadro de diálogo
         Button btPregunta = findViewById(R.id.btIniciar);
 
-        MediaPlayer mediaPlayerJuego = MediaPlayer.create(this, R.raw.my_street);
+        MediaPlayer mediaPlayerJuego = MediaPlayer.create(this, R.raw.ice_cave);
         mediaPlayerJuego.setLooping(true);
         mediaPlayerJuego.start();
 
@@ -141,8 +176,8 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         respuestas[1]="Nébula";
         respuestas[2]="Mercurio";
         int[] respuestasCorrectas = new int[]{1};
-        Question question = new Question(enunciado, GameUtil.PREGUNTA_COMPLEJIDAD_ALTA,
-                GameUtil.PREGUNTA_SIMPLE,respuestas,respuestasCorrectas,20);
+        Question question = new Question(enunciado, GameUtil.PREGUNTA_COMPLEJIDAD_BAJA,
+                GameUtil.PREGUNTA_MULTIPLE,respuestas,respuestasCorrectas,10);
 
         QuestionDialogFragment qdf = new QuestionDialogFragment(question, GameActivity.this);
         qdf.setCancelable(false);
@@ -167,6 +202,29 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
         }
 
     }
+
+    /**
+     * Carga el ambiente de fondo
+     */
+    private void setAmbientefondo(){
+        this.sceneCode = Integer.parseInt(getDefaultSharedPreferences(this).
+                getString("ambient_setting",String.valueOf(GameUtil.TEMA_HIELO)));
+        switch(this.sceneCode){
+            case GameUtil.TEMA_DESIERTO:
+                lyMain.setBackground(getResources().getDrawable(ambientes.get(1)));
+                numAmbiente=1;
+                break;
+            case GameUtil.TEMA_HIELO:
+                lyMain.setBackground(getResources().getDrawable(ambientes.get(0)));
+                numAmbiente=0;
+                break;
+            default:
+                this.setTheme(R.style.Ice_DamGame);
+                break;
+        }
+
+    }
+
 
     /**
      * Elimina la barra de acción y deja el mayor área posible de pantalla libre
@@ -270,6 +328,21 @@ public class GameActivity extends AppCompatActivity implements InterfaceDialog {
 
     public void UpdateLifes(Integer index){
         if (index>1){
-    this.lifes.get(index).setVisibility(View.INVISIBLE);
+         this.lifes.get(index).setVisibility(View.INVISIBLE);
+        }
     }
-}}
+
+    /**
+     * Carga los ambientes que se le a pasado por parametro.
+     * Es necesario que haya la misma cantidad de ambientes que de ambientesV y que
+     * esten en el mismo orden
+     * @param ambientes son las imagenes de los ambientes
+     * @param ambientesV son los valores de los ambientes
+     */
+    public void cargarAmbientes(int[] ambientes, int[] ambientesV){
+        for (int i=0;i<ambientes.length;i++){
+            this.ambientes.add(ambientes[i]);
+            this.ambientesV.add(ambientesV[i]);
+        }
+    }
+}

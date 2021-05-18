@@ -4,14 +4,14 @@ import android.os.AsyncTask;
 
 import java.util.Properties;
 
-import dam.gala.damgame.utils.GameUtil;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import dam.gala.damgame.utils.GameUtil;
 
 /**
  * Esta clase define el email y contiene herramientas para el envio de un correo

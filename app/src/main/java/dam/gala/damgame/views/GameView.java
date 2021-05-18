@@ -12,6 +12,9 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import java.util.Iterator;
+import java.util.Random;
+
 import dam.gala.damgame.activities.GameActivity;
 import dam.gala.damgame.controllers.AudioController;
 import dam.gala.damgame.controllers.TouchController;
@@ -21,9 +24,6 @@ import dam.gala.damgame.model.Question;
 import dam.gala.damgame.model.Touch;
 import dam.gala.damgame.scenes.Scene;
 import dam.gala.damgame.threads.GameLoop;
-
-import java.util.Iterator;
-import java.util.Random;
 
 /**
  * Vista principal del juego, gestiona todos los personajes, objetos y escenas.
@@ -133,7 +133,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if (this.isStopGame()) {
                 this.audioController.stopAudioPlay();
                 if(this.play.isFinished()){
-                    System.out.println(this.play.getLifes());
                 }else if(this.bouncyView.isLanded() || this.bouncyView.isColluded()){
                     //se vuelve a empezar el juego con la siguiente vida
                     this.audioController.startAudioPlay(this.getScene());
@@ -210,7 +209,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 this.play.setCrashBlockCreated(this.play.getCrashBlockCreated() - 1);
             }
         }
-        /*
         if (this.gameConfig.getFramesToNewQuestion() == 0) {
             this.createNewQuestion();
             //nuevo ciclo de preguntas
@@ -222,7 +220,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for (QuestionView goQuestion : this.play.getQuestionViews())
             goQuestion.updatePosition();
 
-         */
         //-----------------------------------------------------------------------------------------
 
         //caputura de las preguntas

@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.view.Display;
 import android.view.View;
+
 import dam.gala.damgame.activities.GameActivity;
 
 /**

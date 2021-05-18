@@ -1,16 +1,17 @@
 package dam.gala.damgame.model;
 
 import androidx.annotation.NonNull;
-import dam.gala.damgame.activities.GameActivity;
-import dam.gala.damgame.scenes.IceScene;
-import dam.gala.damgame.utils.GameUtil;
-import dam.gala.damgame.views.CrashView;
-import dam.gala.damgame.scenes.DesertScene;
-import dam.gala.damgame.views.QuestionView;
-import dam.gala.damgame.scenes.Scene;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import dam.gala.damgame.activities.GameActivity;
+import dam.gala.damgame.scenes.DesertScene;
+import dam.gala.damgame.scenes.IceScene;
+import dam.gala.damgame.scenes.Scene;
+import dam.gala.damgame.utils.GameUtil;
+import dam.gala.damgame.views.CrashView;
+import dam.gala.damgame.views.QuestionView;
 
 /**
  * Jugada, recoge las principales características del juego

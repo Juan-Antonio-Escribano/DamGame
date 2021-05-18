@@ -1,14 +1,16 @@
 package dam.gala.damgame.activities;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.damgame.R;
+
 import dam.gala.damgame.fragments.SettingsFragment;
 import dam.gala.damgame.utils.GameUtil;
 

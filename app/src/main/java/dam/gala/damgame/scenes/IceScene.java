@@ -3,7 +3,9 @@ package dam.gala.damgame.scenes;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
+
 import com.example.damgame.R;
+
 import dam.gala.damgame.activities.GameActivity;
 import dam.gala.damgame.utils.GameUtil;
 
@@ -26,20 +28,20 @@ public class IceScene extends Scene {
     }
     @Override
     public int getQuestionViewWidth() {
-        return getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA).getWidth();
+        return getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_BAJA).getWidth();
     }
 
     @Override
     public int getQuestionViewHeight() {
-        return getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA).getHeight();
+        return getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_BAJA).getHeight();
     }
 
     @Override
     public Bitmap getQuestionViewBitmap(int complexity) {
         if(complexity== GameUtil.PREGUNTA_COMPLEJIDAD_ALTA)
-            return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.desert_quest_d);
+            return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.ice_quest_d);
         else
-            return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.desert_quest_e);
+            return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.ice_quest_e);
     }
 
     @Override
@@ -131,17 +133,17 @@ public class IceScene extends Scene {
 
     @Override
     public int getExplosionBitmapId() {
-        return R.drawable.explosion_out;
+        return R.drawable.water_exp;
     }
 
     @Override
     public int getExplosionViewImgNumber() {
-        return 4;
+        return 5;
     }
 
     @Override
     public Bitmap getExplosionViewBitmap() {
-        return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.explosion_out);
+        return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.water_exp);
     }
 
     @Override
@@ -151,12 +153,12 @@ public class IceScene extends Scene {
 
     @Override
     public int getAudioPlay() {
-        return R.raw.juego_tronos;
+        return R.raw.ice_cave;
     }
 
     @Override
     public int getAudioExplosion() {
-        return R.raw.explosion;
+        return R.raw.explosion_ice;
     }
 
     @Override
@@ -196,21 +198,21 @@ public class IceScene extends Scene {
 
     @Override
     public int getQuesExplosionBitmapId() {
-        return R.drawable.explosion_out;
+        return R.drawable.water_exp;
     }
 
     @Override
     public int getQuesExplosionViewImgNumber() {
-        return 4;
+        return 5;
     }
 
     @Override
     public Bitmap getQuesExplosionViewBitmap() {
-        return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.explosion_out);
+        return BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.water_exp);
     }
 
     @Override
     public int getAudioQuestionExplosion() {
-        return R.raw.explosion;
+        return R.raw.explosion_ice;
     }
 }

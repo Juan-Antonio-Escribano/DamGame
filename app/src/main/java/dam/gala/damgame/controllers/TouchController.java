@@ -2,9 +2,11 @@ package dam.gala.damgame.controllers;
 
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.ArrayList;
+
 import dam.gala.damgame.activities.GameActivity;
 import dam.gala.damgame.model.Touch;
-import java.util.ArrayList;
 
 /**
  * Controlador para el toque de pantalla
