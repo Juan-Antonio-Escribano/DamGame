@@ -40,6 +40,10 @@ public class ExplosionView {
      * Actualiza el estado la animación de explosión
      */
     public void updateState(){
+        if (this.spriteIndex==this.gameView.getScene().getExplosionViewImgNumber()){
+            this.spriteIndex=-1;
+            this.gameView.getAudioController().setMediaExplosionStarted(true);
+        }
         if(isFinished()) return;
         //incrementamos el estado al siguiente momento de la explosión
         this.spriteIndex++;

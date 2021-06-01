@@ -68,4 +68,8 @@ public class AudioController {
     public boolean isMediaExplosionStarted(){
         return this.isMediaExplosionStarted;
     }
+
+    public void setMediaExplosionStarted(boolean mediaExplosionStarted) {
+        isMediaExplosionStarted = mediaExplosionStarted;
+    }
 }

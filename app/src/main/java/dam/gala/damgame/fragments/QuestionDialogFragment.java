@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.damgame.R;
 
+import dam.gala.damgame.activities.GameActivity;
 import dam.gala.damgame.interfaces.InterfaceDialog;
 import dam.gala.damgame.model.Question;
 import dam.gala.damgame.utils.GameUtil;
@@ -39,6 +40,7 @@ public class QuestionDialogFragment extends DialogFragment
     private AlertDialog.Builder builder;
     private Button btConfirmar;
     private InterfaceDialog interfaceDialog;
+    private GameActivity gameActivity;
 
     /**
      * Construye el cuadro de diálogo de la pregunta e inicializa la pregunta y la interfaz
@@ -51,7 +53,10 @@ public class QuestionDialogFragment extends DialogFragment
         this.question = question;
         this.interfaceDialog = interfaceDialog;
     }
-
+    public QuestionDialogFragment(Question question, InterfaceDialog interfaceDialog, GameActivity gameActivity){
+        this(question,interfaceDialog);
+        this.gameActivity=gameActivity;
+    }
     /**
      * Método de callback que se produce antes de mostrar el cuadro de diálogo
      * @param savedInstanceState Contenedor para almacenar información del fragmento
@@ -85,10 +90,10 @@ public class QuestionDialogFragment extends DialogFragment
         RadioGroup rgRes = dialogView.findViewById(R.id.rgRes);
         for(int i=0;i<rgRes.getChildCount();i++) {
             RadioButton rbRes = (RadioButton)rgRes.getChildAt(i);
-            if (i > question.getRespuestas().length-1)
+            if (i > question.getRespuestas().size()-1)
                 rbRes.setVisibility(View.GONE);
             else {
-                rbRes.setText(question.getRespuestas()[i]);
+                rbRes.setText(question.getRespuestas().get(i));
                 rbRes.setOnClickListener(view -> btConfirmar.setEnabled(true));
             }
         }
@@ -116,7 +121,17 @@ public class QuestionDialogFragment extends DialogFragment
 
         this.btConfirmar.setOnClickListener(view -> {
             String respuesta = ((RadioButton)dialogView.findViewById(rgRes.getCheckedRadioButtonId())).getText().toString();
-            interfaceDialog.setRespuesta(respuesta);
+            if(question.getRespuestas().indexOf(respuesta)==question.getRespuestasCorrectas()[0]){
+                this.gameActivity.updateAnswersCorrect();
+                if(rbVida.isChecked()){
+                    this.gameActivity.getGameMove().setLifes(this.gameActivity.getGameMove().getLifes()+1);
+                    this.gameActivity.updateLifesAdd();
+                }else
+                    this.gameActivity.updatePoints(question.getPuntos());
+                this.interfaceDialog.setRespuesta("Respuesta Correcta");
+            }else interfaceDialog.setRespuesta("Respuesta Incorrecta");
+
+            this.gameActivity.updateQuestionCatched();
             QuestionDialogFragment.this.dismiss();
         });
 
@@ -132,7 +147,7 @@ public class QuestionDialogFragment extends DialogFragment
                 tvEnunciado.setTextColor(getResources().getColor(R.color.ice_text));
                 for(int i=0;i<rgRes.getChildCount();i++) {
                     RadioButton rbRes = (RadioButton)rgRes.getChildAt(i);
-                    if (i < question.getRespuestas().length)
+                    if (i < question.getRespuestas().size())
                         rbRes.setTextColor(getResources().getColor(R.color.ice_text));
                 }
                 for(int i=0;i<rgPuntos.getChildCount();i++) {
@@ -178,10 +193,10 @@ public class QuestionDialogFragment extends DialogFragment
         LinearLayout ly = dialogView.findViewById(R.id.lyCheck);
         for(int i=0;i<ly.getChildCount();i++) {
           CheckBox checkBox = (CheckBox) ly.getChildAt(i);
-          if (i>question.getRespuestas().length-1)
+          if (i>question.getRespuestas().size()-1)
               checkBox.setVisibility(View.GONE);
           else {
-              checkBox.setText(question.getRespuestas()[i]);
+              checkBox.setText(question.getRespuestas().get(i));
               checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                   if(isChecked)
                       btConfirmar.setEnabled(true);
@@ -220,13 +235,31 @@ public class QuestionDialogFragment extends DialogFragment
         this.btConfirmar.setEnabled(false);
 
         this.btConfirmar.setOnClickListener(view -> {
-            String respuesta = null;
+            String respuestasCorrectas = "",respuestasIncorrectas="";
+            Boolean incorrecto=false;
             for (int i1 = 0; i1 <ly.getChildCount(); i1++){
                 CheckBox checkBox1 = (CheckBox) ly.getChildAt(i1);
-                if (checkBox1.isChecked())
-                    respuesta+="/"+checkBox1.getText();
+                if (checkBox1.isChecked()){
+                    for (int j=0;j<question.getRespuestasCorrectas().length;j++){
+                        if (question.getRespuestas().indexOf(checkBox1.getText())==question.getRespuestasCorrectas()[j]){
+                            incorrecto=false;
+                            respuestasCorrectas+="/"+checkBox1.getText();
+                            break;
+                        }else incorrecto=true;
+                    }
+                    if(incorrecto) respuestasIncorrectas+="/"+checkBox1.getText();
+                }
             }
-            interfaceDialog.setRespuesta(respuesta);
+            if (respuestasIncorrectas.length()<1){
+                if(rbVida.isChecked()){
+                    this.gameActivity.getGameMove().setLifes(this.gameActivity.getGameMove().getLifes()+1);
+                    this.gameActivity.updateLifesAdd();
+                }else
+                    this.gameActivity.updatePoints(question.getPuntos());
+                this.gameActivity.updateAnswersCorrect();
+            }
+            interfaceDialog.setRespuesta("Respuestas correctas "+respuestasCorrectas+"\nRespuestas incorrectas "+respuestasIncorrectas);
+            this.gameActivity.updateQuestionCatched();
             QuestionDialogFragment.this.dismiss();
         });
 

@@ -3,6 +3,8 @@ package dam.gala.damgame.threads;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import com.example.damgame.R;
+
 import dam.gala.damgame.views.GameView;
 
 /**
@@ -20,7 +22,7 @@ public class GameLoop extends  Thread{
     private int framesToNewQuestion=0;
     private GameView gameView;
     private SurfaceHolder surfaceHolder;
-    private boolean running=true;
+    private boolean running=true, pause=false;
 
     /**
      * Contruye el bucle principal del juego
@@ -40,32 +42,33 @@ public class GameLoop extends  Thread{
         int framesASaltar; // número de frames saltados
 
         tiempoDormir = 0;
+        tiempoComienzo = System.currentTimeMillis();
+        this.gameView.getPlay().setStarDateTime(tiempoComienzo);
         while (this.running) {
-            canvas = null;
-            // bloquear el canvas para que nadie más escriba en el
-            try {
-                canvas = this.surfaceHolder.lockCanvas();
-                synchronized (surfaceHolder) {
-                    tiempoComienzo = System.currentTimeMillis();
-                    framesASaltar = 0; // resetear los frames saltados
+            if (!pause){
+                canvas = null;
+                // bloquear el canvas para que nadie más escriba en el
+                try {
+                    canvas = this.surfaceHolder.lockCanvas();
+                    synchronized (surfaceHolder) {
+                        framesASaltar = 0; // resetear los frames saltados
+                        // Por cada ciclo de ejecución: Actualizar estado del juego
+                        this.gameView.updateState();
+                        // renderizar la imagen
+                        this.gameView.render(canvas);
+                        // Calcular cuánto tardó el ciclo
+                        tiempoDiferencia = System.currentTimeMillis() - tiempoComienzo;
+                        // Calcular cuánto debe dormir el thread antes de la siguiente iteración
+                        tiempoDormir = (int)(TIEMPO_FRAME - tiempoDiferencia);
 
-                    // Por cada ciclo de ejecución: Actualizar estado del juego
-                    this.gameView.updateState();
-                    // renderizar la imagen
-                    this.gameView.render(canvas);
-                    // Calcular cuánto tardó el ciclo
-                    tiempoDiferencia = System.currentTimeMillis() - tiempoComienzo;
-                    // Calcular cuánto debe dormir el thread antes de la siguiente iteración
-                    tiempoDormir = (int)(TIEMPO_FRAME - tiempoDiferencia);
-
-                    if (tiempoDormir > 0) {
-                        // si sleepTime > 0 vamos bien de tiempo
-                        try {
-                            // Enviar el thread a dormir
-                            // Algo de batería ahorramos
-                            Thread.sleep(tiempoDormir);
-                        } catch (InterruptedException e) {}
-                    }
+                        if (tiempoDormir > 0) {
+                            // si sleepTime > 0 vamos bien de tiempo
+                            try {
+                                // Enviar el thread a dormir
+                                // Algo de batería ahorramos
+                                Thread.sleep(tiempoDormir);
+                            } catch (InterruptedException e) {}
+                        }
 
                     /*while (tiempoDormir < 0 && framesASaltar < MAX_FRAMES_SALTADOS) {
                         // Vamos mal de tiempo: Necesitamos ponernos al día
@@ -73,11 +76,12 @@ public class GameLoop extends  Thread{
                         tiempoDormir += TIEMPO_FRAME;  // actualizar el tiempo de dormir
                         framesASaltar++;
                     }*/
-                }
-            } finally {
-                // si hay excepción desbloqueamos el canvas
-                if (canvas != null) {
-                    surfaceHolder.unlockCanvasAndPost(canvas);
+                    }
+                } finally {
+                    // si hay excepción desbloqueamos el canvas
+                    if (canvas != null) {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    }
                 }
             }
         }
@@ -92,5 +96,11 @@ public class GameLoop extends  Thread{
     }
     public void endGame(){
         this.running=false;
+    }
+    public void pauseGame(){
+        this.pause=true;
+    }
+    public void reStartGame(){
+        this.pause=false;
     }
 }

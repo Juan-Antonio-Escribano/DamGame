@@ -2,7 +2,6 @@ package dam.gala.damgame.model;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import dam.gala.damgame.activities.GameActivity;
@@ -19,8 +18,7 @@ import dam.gala.damgame.views.QuestionView;
  * @version 1.0
  */
 public class Play {
-    private LocalDateTime starDateTime;
-    private LocalDateTime endDateTime;
+    private long starDateTime, endDateTime;
     private Scene scene;
     private Player player;
     private GameConfig config;
@@ -105,16 +103,16 @@ public class Play {
     public void setPoints(int points) {
         this.points = points;
     }
-    public LocalDateTime getStarDateTime() {
+    public long getStarDateTime() {
         return starDateTime;
     }
-    public void setStarDateTime(LocalDateTime starDateTime) {
+    public void setStarDateTime(long starDateTime) {
         this.starDateTime = starDateTime;
     }
-    public LocalDateTime getEndDateTime() {
+    public long getEndDateTime() {
         return endDateTime;
     }
-    public void setEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(long endDateTime) {
         this.endDateTime = endDateTime;
     }
     //-----------------------------------------------------------------------------------------
@@ -146,6 +144,9 @@ public class Play {
     public ArrayList<CrashView> getCrashViews() {
         return crashViews;
     }
+    public void setCrashViews(CrashView crashView) {
+        this.crashViews.add(crashView);
+    }
     //-----------------------------------------------------------------------------------------
     //Métodos getter y setters para la vida del OGP
     //-----------------------------------------------------------------------------------------
@@ -170,5 +171,13 @@ public class Play {
     public boolean isFinished() {
         return this.lifes == 0 || (this.scene.getNextImgIndex() < this.scene.getCurrentImgIndex()
                 && this.scene.getNextImgIndex() == 0);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

@@ -16,8 +16,8 @@ import dam.gala.damgame.scenes.Scene;
  * @version 1.0
  */
 public class BouncyView {
-    private int spriteWidth;
-    private int spriteHeight;
+    private int spriteWidth,spriteHeight;
+    private int bouncyWidth, bouncyHeight;
     public int xCoord, yCoord, yCurrentCoord;
     private int spriteIndex;
     private Bitmap bouncyBitmap;
@@ -31,7 +31,7 @@ public class BouncyView {
     private QuestionView questionViewCatched;
     private Play play;
     private boolean floor=false, jump=false, ceiling=false;
-    private int framesDrawBouncy, framesJump, framesJumper=10;
+    private int framesDrawBouncy, framesJump, framesJumper=10, timeCollision=0, timePointPlus=0;
     public BouncyView(GameView gameView) {
         this.gameView = gameView;
         this.play = gameView.getPlay();
@@ -45,57 +45,73 @@ public class BouncyView {
         this.bouncyBitmap = scene.getBouncyViewBitmap();
         this.gravity = scene.getScreenHeight() * this.gameConfig.getGravity()/1920;
         spriteIndex = 0; //recien creado
+        this.bouncyHeight=this.gameView.getScene().getScreenWidth()*10/100;
+        this.bouncyWidth=this.gameView.getScene().getScreenWidth()*10/100;
     }
 
     public void updateState() {
-        if(this.finished) {
-            this.landed = false;
-            return;
-        }
+
          if (this.spriteIndex == 7)
             this.spriteIndex = 0;
-
-         /*
-            Comprobacion de choque del pajaro contra los obstaculos
+        //En el momento en que choque se mantendra sin colicion para que el jugador se pueda recolocar
+        /*
+            asi para que funcione las coliciones:
+                if (this.timeCollision!=0)
          */
-        /*
-        for(CrashView crashView:this.gameView.getPlay().getCrashViews()){
-            /*
-                Comprobacion del choque del pajaro contra el obstaculo que esta situado en el techo
-                * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo
-                * y si la posicion Y es menor que la altura del obstaculo.
-                * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del techo
-             */
-        /*
-            if(this.getxCoord()+this.spriteWidth>=crashView.getxCoor()&&this.getxCoord()+this.spriteWidth<=crashView.getxCoor()+crashView.getWidth()
-                    &&this.getyCurrentCoord()<=crashView.getHeight()) {
-                this.collision = true;
-                this.play.setLifes(this.play.getLifes()-1);
-                break;
-            }
+         if (this.timeCollision!=0)
+             this.timeCollision=this.timeCollision==60?this.timeCollision=0:this.timeCollision+1;
+         else {
+             /*
+                Comprobacion de choque del pajaro contra los obstaculos
             */
-            /*
-                Comprobacion del choque del pajaro contra el obstaculo que esta situado en el suelo
-                * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo y
-                * si la posicion Y del pajaro esta entre la altura de la pantalla y la altura de la pantalla mas el alto del obtaculo del suelo
-                * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del suelo
-             */
-        /*
-            if(this.getxCoord()+this.spriteWidth>=crashView.getxCoor()&&this.getxCoord()+this.spriteWidth<=crashView.getxCoor()+crashView.getWidth()
-                    &&this.getyCurrentCoord()+this.spriteHeight>=this.play.getScene().getScreenHeight()-crashView.getHeightDown()) {
-                this.collision = true;
-                this.play.setLifes(this.play.getLifes()-1);
-                break;
-            }
-        }
-        */
-        //Genera las preguntas
+             for(CrashView crashView:this.gameView.getPlay().getCrashViews()){
+                /*
+                    Comprobacion del choque del pajaro contra el obstaculo que esta situado en el techo
+                    * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo
+                    * y si la posicion Y es menor que la altura del obstaculo.
+                    * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del techo
+                */
+                 if(this.getxCoord()+this.bouncyWidth/2>=crashView.getxCoor()&&this.getxCoord()+this.bouncyWidth/2<=crashView.getxCoor()+crashView.getWidth()
+                         &&this.getyCurrentCoord()<=crashView.getHeight()-50) {
+                     this.timeCollision++;
+                     this.collision=true;
+                     this.play.setLifes(this.play.getLifes()-1);
+                 }
+                /*
+                    Comprobacion del choque del pajaro contra el obstaculo que esta situado en el suelo
+                    * Comprueba si el pajaro(Objeto Grafico Principal) esta situado entre la posicion X y la posicion X mas el ancho del obtaculo y
+                    * si la posicion Y del pajaro esta entre la altura de la pantalla y la altura de la pantalla mas el alto del obtaculo del suelo
+                    * Si ocurre estas condiciones el pajaro habra chocado con el obstaculo del suelo
+                 */
+                 if(this.getxCoord()+this.bouncyWidth/2>=crashView.getxCoor()&&this.getxCoord()+this.bouncyWidth/2<=crashView.getxCoor()+crashView.getWidth()
+                         &&this.getyCurrentCoord()+this.bouncyHeight/2>=this.play.getScene().getScreenHeight()-crashView.getHeightDown()) {
+                     this.timeCollision++;
+                     this.collision=true;
+                     this.play.setLifes(this.play.getLifes()-1);
+                 }
+             }
+             if (this.timePointPlus!=0) {
+                 this.timePointPlus=this.timePointPlus==5?this.timePointPlus=0:this.timePointPlus+1;
+             }
+             else {
+                 for (CrashView crashView : this.gameView.getPlay().getCrashViews()) {
+                     if(this.getxCoord()>crashView.getxCoor()+crashView.getWidth()){
+                         this.timePointPlus++;
+                         this.gameView.getGameActivity().updatePoints(1);
+                     }
+                 }
+             }
+         }
+
+        //Colicion con las preguntas
         Iterator iterator = this.gameView.getPlay().getQuestionViews().iterator();
         QuestionView questionView;
         while(iterator.hasNext() && !this.isFinished()){
             questionView = (QuestionView) iterator.next();
-            if(this.xCoord+this.spriteWidth>=questionView.getxCoor()
-                    && this.yCoord+this.spriteHeight>=questionView.getyCoor()) {
+            if(this.getxCoord()+this.bouncyWidth/2>=questionView.getxCoor()
+                    &&this.getxCoord()+this.bouncyWidth/2<=questionView.getxCoor()+questionView.getQuestionWidth()
+                    &&this.getyCurrentCoord()+this.bouncyHeight/2>=questionView.getyCoor()
+                    &&this.getyCurrentCoord()+this.bouncyHeight/2<=questionView.getyCoor()+questionView.getQuestionHeight()) {
                 this.questionCatched = true;
                 questionView.setQuestionCatched(true);
                 this.questionViewCatched = questionView;
@@ -127,18 +143,45 @@ public class BouncyView {
             this.framesDrawBouncy=0;
         }
         //Animacion del pajaro
-        Bitmap bouncy;
+        Bitmap bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
+                0, 0, 1, 1);
         if (spriteIndex<3)
             bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
                     this.spriteWidth*this.spriteIndex, 0, this.spriteWidth, this.spriteHeight);
         else if (spriteIndex<6)bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
                 this.spriteWidth*(this.spriteIndex-3), this.spriteHeight, this.spriteWidth, this.spriteHeight);
-        else bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
+        else if (spriteIndex<8) bouncy = Bitmap.createBitmap(this.getBouncyBitmap(),
                     this.spriteWidth*(this.spriteIndex-5), this.spriteHeight*2, this.spriteWidth, this.spriteHeight);
 
-        bouncy=Bitmap.createScaledBitmap(bouncy, this.gameView.getScene().getScreenWidth()*10/100, this.gameView.getScene().getScreenWidth()*10/100,true);
+        bouncy=Bitmap.createScaledBitmap(bouncy, this.bouncyWidth, this.bouncyHeight,true);
         canvas.drawBitmap(bouncy, this.getxCoord(), this.getyCurrentCoord(), paint);
 
+        /* ***Codigo para la visualizacón de las coliciones***
+        Paint paint1 = new Paint();
+        paint1.setColor(Color.BLACK);
+        paint1.setStrokeWidth(10);
+        for(CrashView crashView:this.gameView.getPlay().getCrashViews()){
+            canvas.drawLines(new float[]{crashView.getxCoor(),crashView.getyCoor(),crashView.getxCoor(),crashView.getyCoor()+crashView.getHeight()-50}, paint1);
+            canvas.drawLines(new float[]{crashView.getxCoor()+crashView.getWidth(),crashView.getyCoor(),crashView.getxCoor()+crashView.getWidth(),
+                    crashView.getyCoor()+crashView.getHeight()-50}, paint1);
+            canvas.drawLines(new float[]{crashView.getxCoor(),crashView.getyCoor()+crashView.getHeight()-50,crashView.getxCoor()+crashView.getWidth(),
+                    crashView.getyCoor()+crashView.getHeight()-50}, paint1);
+
+            canvas.drawLines(new float[]{crashView.getxCoor(),this.gameView.getScene().getScreenHeight(),crashView.getxCoor()
+                    ,this.gameView.getScene().getScreenHeight()-crashView.getHeightDown()}, paint1);
+            canvas.drawLines(new float[]{crashView.getxCoor()+crashView.getWidth(),this.gameView.getScene().getScreenHeight(),crashView.getxCoor()+crashView.getWidth(),
+                    this.gameView.getScene().getScreenHeight()-crashView.getHeightDown()}, paint1);
+            canvas.drawLines(new float[]{crashView.getxCoor(),this.gameView.getScene().getScreenHeight()-crashView.getHeightDown(),
+                    crashView.getxCoor()+crashView.getWidth(),this.gameView.getScene().getScreenHeight()-crashView.getHeightDown()}, paint1);
+        }
+
+        canvas.drawLines(new float[]{this.getxCoord(),this.getyCurrentCoord(),
+        this.getxCoord()+this.bouncyWidth,this.getyCurrentCoord()}, paint1);
+
+        canvas.drawLines(new float[]{this.getxCoord(),this.getyCurrentCoord()+this.bouncyHeight,
+                this.getxCoord()+this.bouncyWidth,this.getyCurrentCoord()+this.bouncyHeight}, paint1);
+
+         */
     }
 
     /**

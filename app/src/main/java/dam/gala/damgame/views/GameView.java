@@ -9,21 +9,43 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.damgame.R;
+
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import dam.gala.damgame.activities.GameActivity;
 import dam.gala.damgame.controllers.AudioController;
 import dam.gala.damgame.controllers.TouchController;
+import dam.gala.damgame.fragments.FinishDialogFragment;
+import dam.gala.damgame.fragments.QuestionDialogFragment;
+import dam.gala.damgame.fragments.RegisterDialogFragment;
+import dam.gala.damgame.interfaces.InterfaceDialog;
+import dam.gala.damgame.model.Email;
 import dam.gala.damgame.model.GameConfig;
 import dam.gala.damgame.model.Play;
 import dam.gala.damgame.model.Question;
+import dam.gala.damgame.model.Score;
 import dam.gala.damgame.model.Touch;
 import dam.gala.damgame.scenes.Scene;
 import dam.gala.damgame.threads.GameLoop;
+import dam.gala.damgame.utils.GameUtil;
 
 /**
  * Vista principal del juego, gestiona todos los personajes, objetos y escenas.
@@ -31,7 +53,7 @@ import dam.gala.damgame.threads.GameLoop;
  * @author 2º DAM - IES Antonio Gala
  * @version 1.0
  */
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, InterfaceDialog {
     private final int SCORE_POINTS=10;
     private final int SCORE_LIFES=11;
     private final int SCORE_ANSWERS=12;
@@ -131,16 +153,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
             if (this.isStopGame()) {
-                this.audioController.stopAudioPlay();
                 if(this.play.isFinished()){
-                }else if(this.bouncyView.isLanded() || this.bouncyView.isColluded()){
+                    this.audioController.stopAudioPlay();
+                    play.setEndDateTime(System.currentTimeMillis());
+
+                    Map<String, String> map = new HashMap<>();
+                    map.put("rankingScore", String.valueOf(this.play.getPoints()));
+                    map.put("nameUser", this.play.getPlayer().getNameUser());
+
+                    RequestQueue rq = Volley.newRequestQueue(this.getContext());
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.18.6:8080/updateRanking",
+                            new JSONObject(map),
+                            response -> {
+                                Toast.makeText(this.getContext(), R.string.ranking,Toast.LENGTH_SHORT).show();
+                            },
+                            error -> {
+                                Toast.makeText(this.getContext(), error.getMessage(),Toast.LENGTH_SHORT);
+                            });
+                    rq.add(jsonObjectRequest);
+
+                    FinishDialogFragment finishDialogFragment = new FinishDialogFragment(this.play);
+                    finishDialogFragment.setCancelable(false);
+                    finishDialogFragment.show(this.gameActivity.getSupportFragmentManager(), null);
+                    this.gameLoop.endGame();
+                }else if(this.bouncyView.isColluded()){
                     //se vuelve a empezar el juego con la siguiente vida
-                    this.audioController.startAudioPlay(this.getScene());
                     this.updateScore(SCORE_LIFES, this.play.getLifes());
                     this.bouncyView.reStart();
+                    this.setStopGame(false);
                 }else if(this.bouncyView.isQuestionCatched()){
+                    this.audioController.startAudioPlay(this.getScene());
                     //poner audio para la pregunta
                     //mostrar cuadro de diálogo para la pregunta
+                    QuestionDialogFragment qdf = new QuestionDialogFragment(this.bouncyView.getQuestionCatched().getQuestion(), this,this.gameActivity);
+                    qdf.setCancelable(false);
+                    qdf.show(this.gameActivity.getSupportFragmentManager(),null);
+                    this.gameLoop.pauseGame();
                 }
             }
 
@@ -268,12 +316,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             crashView.setHeight(random.nextInt(400)+this.screenHeight*20/100);
             //El espacio que hay entre los crash
             int espacio=Math.abs((-40+crashView.getHeight())-(this.scene.getScreenHeight()-crashView.getHeight()));
-            if (espacio>300){
-                crashView.setScaleHeigth(espacio-300);
-            } else if (espacio<getBouncyView().getSpriteHeight()+150)
-                crashView.setScaleHeigth(-(Math.abs((getBouncyView().getSpriteHeight()+150)-espacio)));
+            if (espacio>400){
+                crashView.setScaleHeigth(espacio-400);
+            } else if (espacio<getBouncyView().getSpriteHeight()+300)
+                crashView.setScaleHeigth(-(Math.abs((getBouncyView().getSpriteHeight()+300)-espacio)));
 
-            this.play.getCrashViews().add(crashView);
+            this.play.setCrashViews(crashView);
             this.play.setCrashBlockCreated(this.play.getCrashBlockCreated() + 1);
         }
     }
@@ -286,7 +334,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void createNewQuestion() {
         if (this.gameActivity.getGameConfig().getQuestions() -
                 this.play.getQuestionsCreated() > 0) {
-            Question question = new Question();
+            //aquí habrá que obtener aleatoriamente una pregunta
+            //del repositorio
+            ArrayList<String> respuestas = new ArrayList<>();
+            String enunciado = "Selecciona cuál de los siguientes planetas no está en la vía láctea";
+            respuestas.add("Marte");
+            respuestas.add("Nébula");
+            respuestas.add("Mercurio");
+            int[] respuestasCorrectas = new int[]{1};
+            Question question;
+            Random ra = new Random();
+            if(ra.nextFloat()<0.20)
+                question = new Question(enunciado, GameUtil.PREGUNTA_COMPLEJIDAD_ALTA,
+                   ra.nextInt(2)==0?GameUtil.PREGUNTA_SIMPLE:GameUtil.PREGUNTA_MULTIPLE,respuestas,respuestasCorrectas,20);
+            else
+                question = new Question(enunciado, GameUtil.PREGUNTA_COMPLEJIDAD_BAJA,
+                        ra.nextInt(2)==0?GameUtil.PREGUNTA_SIMPLE:GameUtil.PREGUNTA_MULTIPLE ,respuestas,respuestasCorrectas,10);
+
             QuestionView goQuestion = new QuestionView(this.play, question);
             this.play.getQuestionViews().add(goQuestion);
             this.play.setQuestionsCreated(this.play.getQuestionsCreated() + 1);
@@ -417,8 +481,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                    case SCORE_ANSWERS:
                        break;
                    case SCORE_LIFES:
-
-                       GameView.this.gameActivity.UpdateLifes((Integer)(value));
+                       GameView.this.gameActivity.updateLifes((Integer)(value));
                        break;
                    case SCORE_POINTS:
                        break;
@@ -426,5 +489,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         });
     }
-
+    @Override
+    public void setRespuesta(String respuesta) {
+        Toast.makeText(getContext(),respuesta,Toast.LENGTH_LONG).show();
+        this.gameLoop.reStartGame();
+        this.bouncyView.reStart();
+        this.setStopGame(false);
+    }
 }

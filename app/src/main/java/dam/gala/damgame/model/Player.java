@@ -6,18 +6,18 @@ package dam.gala.damgame.model;
  * @version 1.0
  */
 public class Player {
-    private String nick;
+    private String nameUser;
     private String password;
     private String email;
 
     /**
      * Construye el objeto del jugador a partir de nick, clave y correo electrónico
-     * @param nick Usuario del juego
+     * @param nameUser Usuario del juego
      * @param password Clave del jugador
      * @param email Correo electrónico, se usará para enviar estadísticas de juego
      */
-    public Player(String nick, String password, String email) {
-        this.nick = nick;
+    public Player(String nameUser, String password, String email) {
+        this.nameUser = nameUser;
         this.password = password;
         this.email = email;
     }
@@ -26,8 +26,8 @@ public class Player {
     //Métodos getter y setter
     //-----------------------------------------------------------------------------------------
 
-    public String getNick() {
-        return nick;
+    public String getNameUser() {
+        return nameUser;
     }
 
     public String getPassword() {

@@ -36,26 +36,40 @@
                         esto sirve para la colocación del elemento
                     app:srcCompat="@drawable/desert_lifes_score": esto es el recurso que se va a mostrar
             -->
+
             <ImageView
                 android:id="@+id/ivBouncy1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/desert_lifes_score" />
 
             <ImageView
                 android:id="@+id/ivBouncy2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/desert_lifes_score" />
 
             <ImageView
                 android:id="@+id/ivBouncy3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/desert_lifes_score" />
+
+            <TextView
+                android:id="@+id/tvLifes"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:text="@string/cero"
+                android:textAllCaps="false"
+                android:textColor="#870404"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="invisible" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,30 +83,63 @@
                 android:text="@string/cero": Esta propiedad es
                     el texto que se va a mostrar
             -->
+
+            <TextView
+                android:id="@+id/tvAnswersCorrect"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:text="@string/cero"
+                android:textAllCaps="false"
+                android:textColor="#870404"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDivisor"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:text="@string/divisor"
+                android:textAllCaps="false"
+                android:textColor="#870404"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvAnswers"
-                android:layout_width="40dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/cero" />
+                android:text="@string/cero"
+                android:textAllCaps="false"
+                android:textColor="#870404"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/ivAnswers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 app:srcCompat="@drawable/desert_answer_score" />
 
             <TextView
                 android:id="@+id/tvPoints"
-                android:layout_width="40dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/cero" />
+                android:text="@string/cero"
+                android:textAllCaps="false"
+                android:textColor="#870404"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/ivPoints"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 app:srcCompat="@drawable/desert_points_score" />
 
         </LinearLayout>

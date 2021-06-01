@@ -20,8 +20,8 @@ import dam.gala.damgame.utils.GameUtil;
  * @version 1.0
  */
 public class QuestionView {
-    private int spriteWidth;
-    private int spriteHeight;
+    private int spriteWidth, spriteHeight;
+    private int questionWidth, questionHeight;
     private int xCoor, yCoor;
     private int spriteIndex;
     private Play play;
@@ -48,17 +48,19 @@ public class QuestionView {
         spriteWidth = this.scene.getQuestionViewWidth()/4;
         spriteHeight =this.scene.getQuestionViewHeight()/4;
         spriteIndex = 0;
+        questionHeight=200;
+        questionWidth=200;
         this.questionBitmap = play.getScene().getQuestionViewBitmap(question.getComplejidad());
-        //el siguiente código hay que modificarlo cuando tengamos las preguntas
         random = new Random();
-        if(random.nextFloat()<0.20){
-            this.question.setComplejidad(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA);
-            this.speed =  GameUtil.HIGH_COMPLEX_SPEED * this.scene.getScreenWidth() /1920;
-            this.questionBitmap = this.scene.getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA);
-        }else{
-            this.question.setComplejidad(GameUtil.PREGUNTA_COMPLEJIDAD_BAJA);
-            this.speed = GameUtil.LOW_COMPLEX_SPEED * this.scene.getScreenWidth() /1920;
-            this.questionBitmap = this.scene.getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_BAJA);
+        switch (question.getComplejidad()){
+            case GameUtil.PREGUNTA_COMPLEJIDAD_ALTA:
+                this.speed =  GameUtil.HIGH_COMPLEX_SPEED * this.scene.getScreenWidth() /1920;
+                this.questionBitmap = this.scene.getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_ALTA);
+                break;
+            case GameUtil.PREGUNTA_COMPLEJIDAD_BAJA:
+                this.speed = GameUtil.LOW_COMPLEX_SPEED * this.scene.getScreenWidth() /1920;
+                this.questionBitmap = this.scene.getQuestionViewBitmap(GameUtil.PREGUNTA_COMPLEJIDAD_BAJA);
+                break;
         }
         //cálculo de dirección aleatoria de cada pregunta generada
         if(random.nextFloat()>0.5)
@@ -136,7 +138,7 @@ public class QuestionView {
 
             Bitmap nowQuestionFrame=Bitmap.createBitmap(this.questionBitmap, this.spriteWidth*this.spriteIndex, this.spriteHeight*this.row,
                     this.spriteWidth ,this.spriteHeight);
-            nowQuestionFrame=Bitmap.createScaledBitmap(nowQuestionFrame,200, 200,true);
+            nowQuestionFrame=Bitmap.createScaledBitmap(nowQuestionFrame,questionWidth, questionHeight,true);
             canvas.drawBitmap(nowQuestionFrame, this.getxCoor(), this.getyCoor(), paint);
         }
     }
@@ -167,5 +169,13 @@ public class QuestionView {
     }
     public QuestionView getQuestionCatched(){
         return this;
+    }
+
+    public int getQuestionWidth() {
+        return questionWidth;
+    }
+
+    public int getQuestionHeight() {
+        return questionHeight;
     }
 }

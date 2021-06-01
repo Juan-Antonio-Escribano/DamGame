@@ -4,7 +4,14 @@
 
     <item
         android:id="@+id/imSettings"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@drawable/ajustes"
         android:title="@string/tema"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/imClose"
+        android:icon="@drawable/previus"
+        android:title="@string/tema"
+        app:showAsAction="always" />
+
 </menu>

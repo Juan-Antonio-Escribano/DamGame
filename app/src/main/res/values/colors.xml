@@ -17,4 +17,16 @@
     <color name="ice_text">#FF000000</color>
     <color name="ice_primary_variant">#0080ff</color>
     <color name="ice_secondary_variant">#0040ff</color>
+    <color name="login_in">#309BBF</color>
+    <color name="login_out">#28819F</color>
+    <color name="login">#184E60</color>
+    <color name="register_in">#88A72A</color>
+    <color name="register_out">#61771E</color>
+    <color name="register">#4E6018</color>
+    <color name="button_login">#103440</color>
+    <color name="buton_register">#27300C</color>
+    <color name="gold">#FFD700</color>
+    <color name="silver">#BEBEBE</color>
+    <color name="bronze">#cd7f32 </color>
+
 </resources>

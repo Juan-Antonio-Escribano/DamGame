@@ -47,4 +47,28 @@
     <string name="cero">0</string>
     <string name="dificultad">Dificultad</string>
     <string name="seleccion_dificultad">Seleccione la dificultad</string>
+    <string name="nombre_usuario">Nombre de usuario:</string>
+    <string name="puntuacion">Puntuación:</string>
+    <string name="duracion">Duración de la partida:</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="divisor">/</string>
+    <string name="ranking">Ranking</string>
+    <string name="creditos">Creditos</string>
+    <string name="nombre_usuario_login">Nombre de usuario</string>
+    <string name="email">Email</string>
+    <string name="contrasesña">Contraseña</string>
+    <string name="confirmar_contraseñas">Repita la contraseña</string>
+    <string name="mostrar_contraseña">Mostrar Contraseña</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="registrar">Registrar</string>
+    <string name="volver_inicio">Volver</string>
+    <!--Errores login-->
+    <string name="error_campo_vacio">Este campo es necesario para el inicio de sesion</string>
+    <string name="usuario_no_encontrado">Ese usuario no existe</string>
+    <string name="usuario_existente">Ese usuario ya existe</string>
+    <string name="usuario_registrado">Usuario registrado con exito</string>
+    <string name="usuario_erroneo">El nombre de usuario o la contraseña son erroneas</string>
+    <string name="contraseñas_diferentes">Las contraseñas son diferentes</string>
+    <string name="enviar_correo">Enviar estadisticas al correo</string>
 </resources>
